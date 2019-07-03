@@ -3,9 +3,10 @@
 namespace IWGB\Join\Provider;
 
 
-use RKA\Middleware;
+use IWGB\Join\TypeHinter;
+use Pimple\ServiceProviderInterface;
 use Slim\App;
-use Slim\Handlers\Error;
+use Pimple\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
@@ -35,6 +36,8 @@ class Slim implements ServiceProviderInterface {
                 
                 return $next($request, $response);
             });
-        }
+
+            return $app;
+        };
     }
 }

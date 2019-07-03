@@ -1,6 +1,6 @@
 <?php
 
-use IWGB\Arms\Provider;
+use IWGB\Join\Provider;
 use Slim\Container;
 
 define('APP_ROOT', __DIR__);
