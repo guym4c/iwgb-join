@@ -1,0 +1,17 @@
+{
+    "require": {
+        "doctrine/orm": "^2.6",
+        "slim/slim": "^3.9",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "myclabs/php-enum": "^1.6",
+        "nyholm/psr7": "^1.0",
+        "kriswallsmith/buzz": "^0.17.2",
+        "php-http/curl-client": "^1.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "IWGB\\Join\\": "src/"
+        }
+    }
+}
