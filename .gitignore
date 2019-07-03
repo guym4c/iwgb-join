@@ -29,12 +29,6 @@ $RECYCLE.BIN/
 /tmp/
 /temp/
 
-# compiled css
-*.css
-*.css.map
-/css/lib/
-
-legacyKeys.php
 keys.php
 
 # Composer
@@ -45,13 +39,3 @@ composer.lock
 # app caches
 /cache/
 /var/
-
-# Old config files
-/legacy/config/
-
-# config files
-/public/config/*.json
-!/public/config/app.json
-/public/config/lang/
-/public/config/edit/
-/public/legacy/config/
