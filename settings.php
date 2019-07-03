@@ -4,4 +4,8 @@
 
 $keys = require_once APP_ROOT . '/keys.php';
 
-return [];
+return [
+    'sentry' => [
+        'dsn' => $keys['sentry'],
+    ],
+];

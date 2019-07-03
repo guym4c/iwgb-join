@@ -1,6 +1,6 @@
 <?php
 
-namespace IWGB\Arms\Action;
+namespace IWGB\Join\Action;
 
 use IWGB\Join\TypeHinter;
 use Psr\Http\Message\ResponseInterface;
@@ -12,10 +12,16 @@ abstract class GenericAction {
 
     protected $http;
 
+    protected $log;
+
+    protected $settings;
+
     public function __construct(Container $c) {
         /** @var $c TypeHinter */
 
         $this->http = $c->http;
+        $this->log = $c->log;
+        $this->settings = $c->settings;
     }
 
     /**
