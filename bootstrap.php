@@ -13,8 +13,8 @@ Sentry\init([
     'dsn' => $c['settings']['sentry']['dsn'],
 ]);
 
-$c->register(new Provider\Slim())
-    ->register(new Provider\HttpClient())
-    ->register(new Provider\Doctrine());
+$c->register(new Provider\Doctrine())
+    ->register(new Provider\Slim())
+    ->register(new Provider\HttpClient());
 
 return $c;
