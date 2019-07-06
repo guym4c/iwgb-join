@@ -24,9 +24,9 @@ return [
 
         'connection' => array_merge([
             'driver' => 'pdo_mysql',
-            'host'   => 'localhost',
+            'host'   => '',
             'port'   => 3306,
-            'dbname' => 'iwgb-join',
+            'dbname' => '',
         ], $keys['db']),
     ],
 ];

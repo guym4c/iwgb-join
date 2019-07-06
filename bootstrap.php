@@ -14,6 +14,7 @@ Sentry\init([
 ]);
 
 $c->register(new Provider\Slim())
-    ->register(new Provider\HttpClient());
+    ->register(new Provider\HttpClient())
+    ->register(new Provider\Doctrine());
 
 return $c;

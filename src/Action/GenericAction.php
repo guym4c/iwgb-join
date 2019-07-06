@@ -22,6 +22,7 @@ abstract class GenericAction {
         $this->http = $c->http;
         $this->log = $c->log;
         $this->settings = $c->settings;
+        $this->em = $c->em;
     }
 
     /**
