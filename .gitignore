@@ -30,6 +30,8 @@ $RECYCLE.BIN/
 /temp/
 
 keys.php
+settings.php
+!*.example.php
 
 # Composer
 composer.phar
@@ -39,3 +41,6 @@ composer.lock
 # app caches
 /cache/
 /var/
+
+# config files
+*.config.json
