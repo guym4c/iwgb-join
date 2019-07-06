@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "https://join.iwgb.org.uk/config/schema/jobs.config.schema.json",
-    "title": "Jobs",
+    "$id": "https://join.iwgb.org.uk/config/schema/job-types.config.schema.json",
+    "title": "Job Types",
     "description": "IWGB application job types",
     "type": "object",
     "additionalProperties": false,
