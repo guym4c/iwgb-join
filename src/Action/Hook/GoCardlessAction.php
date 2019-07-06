@@ -1,6 +1,6 @@
 <?php
 
-namespace IWGB\Join\Hook;
+namespace IWGB\Join\Action\Hook;
 
 use IWGB\Join\Action\GenericAction;
 use Psr\Http\Message\ResponseInterface;

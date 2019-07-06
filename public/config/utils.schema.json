@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://join.iwgb.org.uk/config/schema/utils.schema.json",
+    "title": "Jobs",
+    "description": "IWGB join process utility schemas",
+    "definitions": {
+        "id": {
+            "type": "string",
+            "pattern": "^[a-z\\-]+$"
+        }
+    }
+}
