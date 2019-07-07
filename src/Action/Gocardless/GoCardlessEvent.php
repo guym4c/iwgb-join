@@ -1,14 +1,15 @@
 <?php
 
-namespace IWGB\Join\Action\Hook;
+namespace IWGB\Join\Action\Gocardless;
 
 use IWGB\Join\Action\GenericAction;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use GoCardlessPro as GoCardless;
+use Slim\Http\StatusCode;
 
-class GoCardlessAction extends GenericAction {
+class GoCardlessEvent extends GenericAction {
 
     /**
      * {@inheritdoc}
@@ -29,6 +30,6 @@ class GoCardlessAction extends GenericAction {
             // do something
         }
 
-        return $response->withStatus(204);
+        return $response->withStatus(StatusCode::HTTP_NO_CONTENT);
     }
 }

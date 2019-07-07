@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://join.iwgb.org.uk/config/schema/sorter-results.config.schema.json",
+    "title": "Sorter results",
+    "description": "Maps applicant sorter form results to branches and membership types",
+    "type": "object",
+    "additionalProperties": false,
+    "definitions": {
+        "sorter-result": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "form-id": {
+                    "description": "The Typeform form ID",
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9]{6}$"
+                },
+                "question-id": {
+                    "description": "The Typeform question ID",
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9]{12}$"
+                },
+                "condition": {
+                    "description": "The required answer to the question",
+                    "type": "string"
+                },
+                "plan-id": {
+                    "description": "The Gocardless plan ID",
+                    "type": "string",
+                    "pattern": "^PL[a-zA-Z0-9]{12}$",
+                },
+                "branch-id": {
+                    "description": "The Airtable branch record ID",
+                    "type": "string",
+                    "pattern":"^rec[a-zA-Z0-9]{14}$"
+                }
+            },
+            "required": ["form-id", "question-id", "condition", "plan-id", "branch-id"]
+        }
+    },
+    "properties": {
+        "sorter-results": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/sorter-result"
+            }
+        }
+    }
+}

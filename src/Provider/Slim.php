@@ -40,6 +40,11 @@ class Slim implements ServiceProviderInterface {
 
             $app->get('/apply/{slug}', Action\CreateApplication::class);
 
+            $app->group('/callback', function (App $app) {
+
+                $app->post('/typeform/sorter', Action\Typeform\Sorter::class);
+            });
+
             return $app;
         };
     }

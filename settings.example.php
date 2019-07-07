@@ -5,6 +5,10 @@
 $keys = require_once APP_ROOT . '/keys.php';
 
 return [
+
+    'displayErrorDetails' => true,
+    'determineRouteBeforeAppMiddleware' => false,
+
     'gocardless' => [
         'webhookSecret' => $keys['gocardless']['webhook'],
     ],
@@ -28,5 +32,9 @@ return [
             'port'   => 3306,
             'dbname' => '',
         ], $keys['db']),
+    ],
+    'typeform' => [
+        'webhookSecret' => $keys['typeform']['webhook'],
+        'api'           => $keys['typeform']['api'],
     ],
 ];

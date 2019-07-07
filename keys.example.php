@@ -9,4 +9,8 @@ return [
         'user'     => '', // db credentials
         'password' => '',
     ],
+    'typeform'   => [
+        'webhook' => '',
+        'api'     => '',
+    ],
 ];

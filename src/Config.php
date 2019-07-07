@@ -7,4 +7,5 @@ use MyCLabs\Enum\Enum;
 class Config extends Enum {
 
     const JobTypes = 'job-types';
+    const SorterResults = 'sorter-results';
 }
