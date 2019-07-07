@@ -22,7 +22,7 @@ class JsonConfigObject {
     private static function getAssoc(string $name): ?array {
         return json_decode(
             file_get_contents(
-                sprintf("%s/public/config/$name", APP_ROOT)), true);
+                sprintf("%s/public/config/$name.config.json", APP_ROOT)), true);
     }
 
 }

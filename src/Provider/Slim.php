@@ -3,6 +3,7 @@
 namespace IWGB\Join\Provider;
 
 
+use IWGB\Join\Action;
 use IWGB\Join\TypeHinter;
 use Pimple\ServiceProviderInterface;
 use Slim\App;
@@ -36,6 +37,8 @@ class Slim implements ServiceProviderInterface {
                 
                 return $next($request, $response);
             });
+
+            $app->get('/apply/{slug}', Action\CreateApplication::class);
 
             return $app;
         };
