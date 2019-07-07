@@ -27,7 +27,7 @@ class CreateApplication extends GenericAction {
             return $response->withRedirect(self::INVALID_INPUT_RETURN_URL);
 
         $applicant = new Applicant();
-        $this->em->persist($applicant);
+        $this->persist($applicant)->flush();
 
         return $response->withRedirect(sprintf("https://%s.typeform.com/to/{$job['typeform-id']}?aid=%s",
                 self::TYPEFORM_USERNAME,

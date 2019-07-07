@@ -25,9 +25,9 @@
                     "type": "string"
                 },
                 "plan-id": {
-                    "description": "The Gocardless plan ID",
+                    "description": "The Airtable plan ID",
                     "type": "string",
-                    "pattern": "^PL[a-zA-Z0-9]{12}$",
+                    "pattern": "^rec[a-zA-Z0-9]{14}$",
                 },
                 "branch-id": {
                     "description": "The Airtable branch record ID",

@@ -2,6 +2,8 @@
 
 namespace IWGB\Join\Action;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMException;
 use IWGB\Join\TypeHinter;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Container;
@@ -37,4 +39,16 @@ abstract class GenericAction {
      * @return ResponseInterface
      */
     abstract public function __invoke(Request $request, Response $response, array $args): ResponseInterface;
+
+    /**
+     * Fluent persist() wrapper
+     *
+     * @param object $entity
+     * @return EntityManager
+     * @throws ORMException
+     */
+    protected function persist($entity): EntityManager {
+        $this->em->persist($entity);
+        return $this->em;
+    }
 }

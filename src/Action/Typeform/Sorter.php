@@ -2,6 +2,9 @@
 
 namespace IWGB\Join\Action\Typeform;
 
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Guym4c\TypeformAPI\Model\Answer;
 use Guym4c\TypeformAPI\Model\FormResponse;
 use Guym4c\TypeformAPI\Typeform;
 use IWGB\Join\Config;
@@ -15,6 +18,8 @@ use Slim\Http\StatusCode;
 
 class Sorter extends GenericTypeformAction {
 
+    const NO_SORTING_RESULT_FOUND_MSG = "No matching plan was found for the applicant's answers";
+
     private $results;
 
     public function __construct(Container $c) {
@@ -25,6 +30,8 @@ class Sorter extends GenericTypeformAction {
 
     /**
      * {@inheritdoc}
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
@@ -36,32 +43,47 @@ class Sorter extends GenericTypeformAction {
         if ($event->eventType != 'form_response')
             return $response->withStatus(StatusCode::HTTP_NO_CONTENT);
 
-        $error = $this->parseTypeformEvent($event->formResponse, $response);
-        if ($error != null)
-            return $error;
-
+        if (!$this->parseTypeformEvent($event->formResponse))
+            $this->log->addError(self::NO_SORTING_RESULT_FOUND_MSG);
+        
         return $response->withStatus(StatusCode::HTTP_NO_CONTENT);
     }
 
-    private function parseTypeformEvent(FormResponse $form, Response $response): ?ResponseInterface {
+    /**
+     * @param FormResponse $form
+     * @return bool
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function parseTypeformEvent(FormResponse $form): bool {
         /** @var Applicant $applicant */
         $applicant = $this->em->getRepository(Applicant::class)
             ->find($form->hidden['aid']);
 
         if (empty($applicant))
-            return $response->withStatus(StatusCode::HTTP_NO_CONTENT);
+            return false;
 
         $answer = end($form->answers);
-        $sortingResult = $this->findResultByQuestionId($answer->field->id);
 
-        //TODO
+        $sortingResult = $this->findResultByQuestion($answer);
 
+        if ($sortingResult == null)
+            return false;
+
+        $applicant->setBranch($sortingResult['branch-id']);
+        $applicant->setMembershipType($sortingResult['plan-id']);
+
+        $this->em->flush();
+
+        return true;
     }
 
-    private function findResultByQuestionId(string $id): ?array {
+    private function findResultByQuestion(Answer $answer): ?array {
 
         foreach ($this->results as $result) {
-            if ($result['question-id'] == $id)
+
+            if ($result['question-id'] == $answer->field->id &&
+                strval($result['condition']) == $answer->answer)
                 return $result;
         }
 
