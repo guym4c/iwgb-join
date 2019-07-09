@@ -45,7 +45,7 @@ class Sorter extends GenericTypeformAction {
 
         if (!$this->parseTypeformEvent($event->formResponse))
             $this->log->addError(self::NO_SORTING_RESULT_FOUND_MSG);
-        
+
         return $response->withStatus(StatusCode::HTTP_NO_CONTENT);
     }
 
@@ -67,7 +67,7 @@ class Sorter extends GenericTypeformAction {
 
         $sortingResult = $this->findResultByQuestion($answer);
 
-        if ($sortingResult == null)
+        if (empty($sortingResult))
             return false;
 
         $applicant->setBranch($sortingResult['branch-id']);
@@ -78,7 +78,7 @@ class Sorter extends GenericTypeformAction {
         return true;
     }
 
-    private function findResultByQuestion(Answer $answer): ?array {
+    private function findResultByQuestion(Answer $answer): array {
 
         foreach ($this->results as $result) {
 
@@ -87,7 +87,7 @@ class Sorter extends GenericTypeformAction {
                 return $result;
         }
 
-        return null;
+        return [];
     }
 
 }

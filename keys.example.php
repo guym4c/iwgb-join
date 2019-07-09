@@ -2,7 +2,8 @@
 
 return [
     'gocardless' => [
-        'webhook' => '', // gocardless event webhook secret
+        'webhook'     => '', // gocardless event webhook secret
+        'accessToken' => '',
     ],
     'sentry'     => '', // sentry URL
     'db'         => [

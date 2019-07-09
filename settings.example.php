@@ -6,6 +6,8 @@ $keys = require_once APP_ROOT . '/keys.php';
 
 return [
 
+    'dev' => true,
+
     'displayErrorDetails' => true,
     'determineRouteBeforeAppMiddleware' => false,
 
