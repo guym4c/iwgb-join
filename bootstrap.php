@@ -16,6 +16,7 @@ Sentry\init([
 $c->register(new Provider\Doctrine())
     ->register(new Provider\Slim())
     ->register(new Provider\HttpClient())
-    ->register(new Provider\LogProvider());
+    ->register(new Provider\LogProvider())
+    ->register(new Provider\AirtableProvider());
 
 return $c;

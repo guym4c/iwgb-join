@@ -37,4 +37,8 @@ return [
         'webhookSecret' => $keys['typeform']['webhook'],
         'api'           => $keys['typeform']['api'],
     ],
+    'airtable'   => [
+        'key'  => $keys['airtable'],
+        'base' => '',
+    ],
 ];

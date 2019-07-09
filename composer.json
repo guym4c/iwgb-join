@@ -12,7 +12,8 @@
         "moontoast/math": "^1.1",
         "sentry/sentry": "^2.1",
         "guzzlehttp/guzzle": "^6.3",
-        "guym4c/typeform-api": "@dev"
+        "guym4c/typeform-api": "@dev",
+        "guym4c/airtable-client": "@dev"
     },
     "autoload": {
         "psr-4": {

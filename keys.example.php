@@ -13,4 +13,5 @@ return [
         'webhook' => '',
         'api'     => '',
     ],
+    'airtable'   => '',
 ];
