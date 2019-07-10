@@ -7,6 +7,14 @@
         "id": {
             "type": "string",
             "pattern": "^[a-z\\-]+$"
+        },
+        "airtable-id": {
+            "type": "string",
+            "pattern": "^rec[a-zA-Z0-9]{14}$"
+        },
+        "typeform-form-id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{6}$"
         }
     }
 }

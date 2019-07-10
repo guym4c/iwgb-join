@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://join.iwgb.org.uk/config/schema/sorter-results.config.schema.json",
+    "title": "Sorter results",
+    "description": "Maps applicant sorter form results to branches and membership types",
+    "type": "object",
+    "additionalProperties": false,
+    "definitions": {
+        "branch-form": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "branch-id": {
+                    "description": "Airtable Branch ID",
+                    "$ref": "utils.schema.json#/definitions/airtable-id"
+                },
+                "form-id": {
+                    "description": "Typeform branch form ID",
+                    "$ref": "utils.schema.json#/definitions/typeform-form-id"
+                }
+            }
+        }
+    }
+}

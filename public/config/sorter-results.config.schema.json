@@ -12,8 +12,7 @@
             "properties": {
                 "form-id": {
                     "description": "The Typeform form ID",
-                    "type": "string",
-                    "pattern": "^[a-zA-Z0-9]{6}$"
+                    "$ref": "utils.schema.json#/definitions/typeform-form-id"
                 },
                 "question-id": {
                     "description": "The Typeform question ID",
@@ -26,13 +25,11 @@
                 },
                 "plan-id": {
                     "description": "The Airtable plan ID",
-                    "type": "string",
-                    "pattern": "^rec[a-zA-Z0-9]{14}$",
+                    "$ref": "utils.schema.json#/definitions/airtable-id"
                 },
                 "branch-id": {
                     "description": "The Airtable branch record ID",
-                    "type": "string",
-                    "pattern":"^rec[a-zA-Z0-9]{14}$"
+                    "$ref": "utils.schema.json#/definitions/airtable-id"
                 }
             },
             "required": ["form-id", "question-id", "condition", "plan-id", "branch-id"]
