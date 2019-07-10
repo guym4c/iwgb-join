@@ -1,6 +1,6 @@
 <?php
 
-namespace IWGB\Join\Action\Gocardless;
+namespace IWGB\Join\Action\GoCardless;
 
 use IWGB\Join\Action\GenericAction;
 use Psr\Http\Message\ResponseInterface;

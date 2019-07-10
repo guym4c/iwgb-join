@@ -5,6 +5,8 @@ namespace IWGB\Join\Domain;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity
@@ -19,6 +21,12 @@ class Applicant {
      * @ORM\GeneratedValue(strategy="UUID")
      */
     protected $id;
+
+    /** @var string
+     *
+     * @ORM\Column
+     */
+    protected $session;
 
     /**
      * @var ?string
@@ -43,8 +51,10 @@ class Applicant {
 
     /**
      * Applicant constructor.
+     * @throws Exception
      */
     public function __construct() {
+        $this->session = Uuid::uuid4();
         $this->timestamp = new DateTime();
     }
 
@@ -53,6 +63,13 @@ class Applicant {
      */
     public function getId(): string {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSession(): string {
+        return $this->session;
     }
 
     /**

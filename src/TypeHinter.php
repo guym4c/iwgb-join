@@ -2,14 +2,11 @@
 
 namespace IWGB\Join;
 
-use Buzz\Browser;
 use Doctrine\ORM\EntityManager;
+use Guym4c\Airtable\Airtable;
 use Monolog\Logger;
 
 class TypeHinter {
-
-    /** @var $http Browser */
-    public $http;
 
     /** @var $settings array */
     public $settings;
@@ -19,5 +16,8 @@ class TypeHinter {
 
     /** @var $em EntityManager */
     public $em;
+
+    /** @var $airtable Airtable */
+    public $airtable;
 
 }

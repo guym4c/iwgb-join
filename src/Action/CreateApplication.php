@@ -1,6 +1,6 @@
 <?php
 
-namespace IWGB\Join\Action\Typeform;
+namespace IWGB\Join\Action;
 
 use Exception;
 use IWGB\Join\Config;
@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class CreateApplication extends GenericTypeformAction {
+class CreateApplication extends GenericAction {
 
     /**
      * {@inheritdoc}

@@ -1,6 +1,6 @@
 <?php
 
-namespace IWGB\Join\Action\Gocardless;
+namespace IWGB\Join\Action\GoCardless;
 
 use GoCardlessPro;
 use GoCardlessPro\Environment;
@@ -8,7 +8,7 @@ use IWGB\Join\Action\GenericAction;
 use IWGB\Join\TypeHinter;
 use Slim\Container;
 
-abstract class GenericGocardlessAction extends GenericAction {
+abstract class GenericGoCardlessAction extends GenericAction {
 
     protected $gocardless;
 
