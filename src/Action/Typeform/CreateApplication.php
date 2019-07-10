@@ -1,17 +1,16 @@
 <?php
 
-namespace IWGB\Join\Action;
+namespace IWGB\Join\Action\Typeform;
 
 use Exception;
 use IWGB\Join\Config;
 use IWGB\Join\Domain\Applicant;
 use IWGB\Join\JsonConfigObject;
 use Psr\Http\Message\ResponseInterface;
-use Ramsey\Uuid\Uuid;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class CreateApplication extends GenericAction {
+class CreateApplication extends GenericTypeformAction {
 
     /**
      * {@inheritdoc}
@@ -29,8 +28,6 @@ class CreateApplication extends GenericAction {
         $applicant = new Applicant();
         $this->persist($applicant)->flush();
 
-        return $response->withRedirect(sprintf("https://%s.typeform.com/to/{$job['typeform-id']}?aid=%s",
-                self::TYPEFORM_USERNAME,
-                $applicant->getId()));
+        return self::redirectToTypeform($job['typeform-id'], $applicant, $response);
     }
 }

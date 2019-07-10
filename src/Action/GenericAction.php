@@ -21,7 +21,7 @@ abstract class GenericAction {
     protected $em;
 
     const INVALID_INPUT_RETURN_URL = 'https://iwgb.org.uk/join';
-    const TYPEFORM_USERNAME = 'iwgb';
+    const TYPEFORM_FORM_BASE_URL = 'https://iwgb.typeform.com/to';
 
     public function __construct(Container $c) {
         /** @var $c TypeHinter */
