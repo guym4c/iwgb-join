@@ -38,11 +38,13 @@ class Slim implements ServiceProviderInterface {
                 return $next($request, $response);
             });
 
-            $app->get('/apply/{slug}', Action\CreateApplication::class);
+            $app->get('/join/{slug}', Action\CreateApplication::class);
 
             $app->group('/callback', function (App $app) {
 
                 $app->post('/typeform/sorter', Action\Typeform\Sorter::class);
+                $app->get('/typeform/{aid}', Action\GoCardless\CreateRedirectFlow::class);
+                $app->get('/gocardless/success', Action\GoCardless\FlowSuccess::class);
             });
 
             return $app;

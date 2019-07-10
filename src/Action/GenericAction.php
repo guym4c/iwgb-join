@@ -4,6 +4,8 @@ namespace IWGB\Join\Action;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
+use Guym4c\Airtable\ListFilter;
+use Guym4c\Airtable\Record;
 use IWGB\Join\Domain\Applicant;
 use IWGB\Join\TypeHinter;
 use Psr\Http\Message\ResponseInterface;

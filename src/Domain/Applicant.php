@@ -6,6 +6,10 @@ namespace IWGB\Join\Domain;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
+use Guym4c\Airtable\Airtable;
+use Guym4c\Airtable\AirtableApiException;
+use Guym4c\Airtable\ListFilter;
+use Guym4c\Airtable\Record;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -41,6 +45,13 @@ class Applicant {
      * @ORM\Column(nullable = true)
      */
     protected $membershipType;
+
+    /**
+     * @var ?string
+     *
+     * @ORM\Column(nullable = true)
+     */
+    protected $airtableId;
 
     /**
      * @var DateTime
@@ -105,5 +116,37 @@ class Applicant {
      */
     public function setMembershipType(?string $membershipType): void {
         $this->membershipType = $membershipType;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAirtableId(): ?string {
+        return $this->airtableId;
+    }
+
+    /**
+     * @param ?string $airtableId
+     */
+    public function setAirtableId($airtableId): void {
+        $this->airtableId = $airtableId;
+    }
+
+    /**
+     * @param Airtable $airtable
+     * @return Record
+     * @throws AirtableApiException
+     */
+    public function fetchRecord(Airtable $airtable): Record {
+
+        if (!empty($this->airtableId)) {
+            return $airtable->get('Members', $this->airtableId);
+        } else {
+            $record = $airtable->list('Members', (new ListFilter())
+                ->setFormula("{Applicant ID = \"{$this->id}\""))
+                       ->getRecords()[0];
+            $this->airtableId = $record->getId();
+            return $record;
+        }
     }
 }
