@@ -4,8 +4,8 @@
 namespace IWGB\Join\Action\GoCardless;
 
 use GoCardlessPro\Core\Exception\InvalidStateException;
-use GoCardlessPro\Resources\RedirectFlow;
 use Guym4c\Airtable\AirtableApiException;
+use IWGB\Join\Domain\AirtablePlanRecord;
 use IWGB\Join\Domain\Applicant;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
@@ -14,6 +14,9 @@ use Slim\Http\Response;
 class FlowSuccess extends GenericGoCardlessAction {
 
     const FLOW_ID_PARAM_KEY = 'redirect_flow_id';
+    const AIRTABLE_CONFIRMED_STATUS = 'Confirmed';
+    const BASE_PAYMENT_REFERENCE = 'IWGB';
+    const CONFIRMATION_REDIRECT_URL = '';
 
     /**
      * {@inheritdoc}
@@ -37,15 +40,26 @@ class FlowSuccess extends GenericGoCardlessAction {
             ->complete($flow->id, $applicant->getSession());
 
         $record->{'Customer ID'} = $flow->links['customer'];
+        $record->Status = self::AIRTABLE_CONFIRMED_STATUS;
         $this->airtable->update($record);
 
-        $plan = $this->airtable->get('Plans', $applicant->getMembershipType());
+        $plan = new AirtablePlanRecord(
+            $this->airtable->get('Plans', $applicant->getMembershipType()));
 
+        $branch = $this->airtable->get('Branches', $plan->getBranchId());
 
+        $planName = "{$branch->Name}: {$plan->getPlanName()}";
 
+        $this->gocardless->subscriptions()->create(array_merge([
+            'amount'            => $plan->getAmount() * 100,
+            'currency'          => 'GBP',
+            'name'              => $planName,
+            'payment_reference' => self::BASE_PAYMENT_REFERENCE . '-' . $branch->{'Payment reference'},
+            'links'             => [
+                'mandate' => $flow->links['mandate'],
+            ],
+        ], $plan->getGoCardlessIntervalFormat()));
 
-
-
-
+        return $response->withRedirect(self::CONFIRMATION_REDIRECT_URL);
     }
 }
