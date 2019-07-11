@@ -13,6 +13,7 @@ return [
 
     'gocardless' => [
         'webhookSecret' => $keys['gocardless']['webhook'],
+        'accessToken'   => $keys['gocardless']['accessToken'],
     ],
     'sentry'     => [
         'dsn' => $keys['sentry'],

@@ -56,7 +56,7 @@ class Applicant {
     /**
      * @var DateTime
      *
-     * @ORM\Column
+     * @ORM\Column(type="datetime")
      */
     protected $timestamp;
 
