@@ -39,7 +39,12 @@ class FlowSuccess extends GenericGoCardlessAction {
         $flow = $this->gocardless->redirectFlows()
             ->complete($flow->id, $applicant->getSession());
 
+        $bankAccount = $this->gocardless->customerBankAccounts()->get($flow->links['customer_bank_account']);
+
         $record->{'Customer ID'} = $flow->links['customer'];
+        $record->{'Bank'} = $bankAccount->bank_name;
+        $record->{'Bank account'} = "******{$bankAccount->account_number_ending}";
+
         $record->Status = self::AIRTABLE_CONFIRMED_STATUS;
         $this->airtable->update($record);
 
