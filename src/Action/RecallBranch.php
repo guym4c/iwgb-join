@@ -15,7 +15,7 @@ class RecallBranch extends GenericAction {
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
-        $applicant = $this->getApplicant($args);
+        $applicant = $this->getApplicant();
 
         return self::redirectToTypeform(
             JsonConfigObject::getItemByName(Config::BranchForms, $applicant->getBranch(), 'branch-id')['form-id'],

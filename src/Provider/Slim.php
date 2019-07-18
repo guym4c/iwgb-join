@@ -10,6 +10,8 @@ use Slim\App;
 use Pimple\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Slim\Middleware\Session;
+use SlimSession;
 
 class Slim implements ServiceProviderInterface {
 
@@ -17,6 +19,10 @@ class Slim implements ServiceProviderInterface {
      * {@inheritdoc}
      */
     public function register(Container $c) {
+
+        $c['session'] = function () {
+            return new SlimSession\Helper();
+        };
 
         $c['slim'] = function (Container $c): App {
             /** @var $c TypeHinter */
@@ -37,6 +43,12 @@ class Slim implements ServiceProviderInterface {
                 
                 return $next($request, $response);
             });
+
+            $app->add(new Session([
+                'name' => 'IwgbMemberSessid',
+                'autorefresh' => true,
+                'lifetime' => '1 hour',
+            ]));
 
             $app->get('/join/{slug}', Action\CreateApplication::class);
 

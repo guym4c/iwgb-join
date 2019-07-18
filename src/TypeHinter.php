@@ -5,6 +5,7 @@ namespace IWGB\Join;
 use Doctrine\ORM\EntityManager;
 use Guym4c\Airtable\Airtable;
 use Monolog\Logger;
+use SlimSession\Helper;
 
 class TypeHinter {
 
@@ -19,5 +20,8 @@ class TypeHinter {
 
     /** @var $airtable Airtable */
     public $airtable;
+
+    /** @var Helper */
+    public $session;
 
 }

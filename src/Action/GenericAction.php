@@ -4,8 +4,6 @@ namespace IWGB\Join\Action;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
-use Guym4c\Airtable\ListFilter;
-use Guym4c\Airtable\Record;
 use IWGB\Join\Domain\Applicant;
 use IWGB\Join\TypeHinter;
 use Psr\Http\Message\ResponseInterface;
@@ -23,8 +21,11 @@ abstract class GenericAction {
 
     protected $airtable;
 
+    protected $session;
+
     const INVALID_INPUT_RETURN_URL = 'https://iwgb.org.uk/join';
     const TYPEFORM_FORM_BASE_URL = 'https://iwgb.typeform.com/to';
+    const SESSION_AID_KEY = 'applicant';
 
     public function __construct(Container $c) {
         /** @var $c TypeHinter */
@@ -33,6 +34,7 @@ abstract class GenericAction {
         $this->settings = $c->settings;
         $this->em = $c->em;
         $this->airtable = $c->airtable;
+        $this->session = $c->session;
     }
 
     /**
@@ -60,11 +62,11 @@ abstract class GenericAction {
             self::TYPEFORM_FORM_BASE_URL));
     }
 
-    protected function getApplicant(array $args): Applicant {
+    protected function getApplicant(): Applicant {
 
         /** @var Applicant $applicant */
         $applicant = $this->em->getRepository(Applicant::class)
-            ->find($args['aid']);
+            ->find($this->session->get(self::SESSION_AID_KEY));
 
         if (empty($applicant))
             ;//error

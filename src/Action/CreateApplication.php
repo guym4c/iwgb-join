@@ -27,6 +27,7 @@ class CreateApplication extends GenericAction {
 
         $applicant = new Applicant();
         $this->persist($applicant)->flush();
+        $this->session->set(self::SESSION_AID_KEY, $applicant->getId());
 
         return self::redirectToTypeform($job['typeform-id'], $applicant, $response);
     }
