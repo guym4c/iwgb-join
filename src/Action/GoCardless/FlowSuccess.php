@@ -14,7 +14,7 @@ use Slim\Http\Response;
 class FlowSuccess extends GenericGoCardlessAction {
 
     const FLOW_ID_PARAM_KEY = 'redirect_flow_id';
-    const AIRTABLE_CONFIRMED_STATUS = 'Confirmed';
+    const AIRTABLE_CONFIRMED_STATUS = 'Member';
     const BASE_PAYMENT_REFERENCE = 'IWGB';
     const CONFIRMATION_REDIRECT_URL = '';
 

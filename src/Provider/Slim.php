@@ -55,8 +55,8 @@ class Slim implements ServiceProviderInterface {
             $app->group('/callback', function (App $app) {
 
                 $app->post('/typeform/sorter', Action\Typeform\Sorter::class);
-                $app->get('/typeform/branch/{aid}', Action\RecallBranch::class);
-                $app->get('/typeform/pay/{aid}', Action\GoCardless\CreateRedirectFlow::class);
+                $app->get('/typeform/branch', Action\RecallBranch::class);
+                $app->get('/typeform/pay', Action\GoCardless\CreateRedirectFlow::class);
                 $app->get('/gocardless/success', Action\GoCardless\FlowSuccess::class);
             });
 
