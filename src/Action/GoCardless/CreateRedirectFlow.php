@@ -7,7 +7,6 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use GoCardlessPro\Core\Exception\InvalidStateException;
 use Guym4c\Airtable\AirtableApiException;
-use Guym4c\Airtable\ListFilter;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -31,16 +30,16 @@ class CreateRedirectFlow extends GenericGoCardlessAction {
 
         $plan = $this->airtable->get('Plans', $applicant->getMembershipType());
 
-        $flow = $this->gocardless->redirectFlows()->create([
+        $flow = $this->gocardless->redirectFlows()->create(['params' => [
             'session_token'        => $applicant->getSession(),
             'success_redirect_url' => self::SUCCESS_REDIRECT_URL,
-            'description'          => "{$plan->Branch->load('Branches')->Name}: {$plan->Plan} (£{$plan->Amount}, )",
+            'description'          => "{$plan->Branch->load('Branches')->Name}: {$plan->Plan} (£{$plan->Amount})",
             'prefilled_customer'   => [
-                'email'       => $record->email,
+                'email'       => $record->Email,
                 'family_name' => $record->{'Last Name'},
                 'given_name'  => $record->{'First Name'},
             ],
-        ]);
+        ]]);
 
         return $response->withRedirect($flow->redirect_url);
     }

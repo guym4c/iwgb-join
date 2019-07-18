@@ -143,7 +143,7 @@ class Applicant {
             return $airtable->get('Members', $this->airtableId);
         } else {
             $record = $airtable->list('Members', (new ListFilter())
-                ->setFormula("{Applicant ID = \"{$this->id}\""))
+                ->setFormula("SEARCH('{$this->id}', {Applicant ID})"))
                        ->getRecords()[0];
             $this->airtableId = $record->getId();
             return $record;

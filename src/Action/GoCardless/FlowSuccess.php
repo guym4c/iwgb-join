@@ -55,7 +55,7 @@ class FlowSuccess extends GenericGoCardlessAction {
 
         $planName = "{$branch->Name}: {$plan->getPlanName()}";
 
-        $this->gocardless->subscriptions()->create(array_merge([
+        $this->gocardless->subscriptions()->create(['params' => array_merge([
             'amount'            => $plan->getAmount() * 100,
             'currency'          => 'GBP',
             'name'              => $planName,
@@ -63,7 +63,7 @@ class FlowSuccess extends GenericGoCardlessAction {
             'links'             => [
                 'mandate' => $flow->links['mandate'],
             ],
-        ], $plan->getGoCardlessIntervalFormat()));
+        ], $plan->getGoCardlessIntervalFormat())]);
 
         return $response->withRedirect(self::CONFIRMATION_REDIRECT_URL);
     }
