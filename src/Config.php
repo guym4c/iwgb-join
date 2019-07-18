@@ -8,5 +8,4 @@ class Config extends Enum {
 
     const JobTypes = 'job-types';
     const SorterResults = 'sorter-results';
-    const BranchForms = 'branch-forms';
 }

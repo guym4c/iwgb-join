@@ -2,8 +2,6 @@
 
 namespace IWGB\Join\Action;
 
-use IWGB\Join\Config;
-use IWGB\Join\JsonConfigObject;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -18,7 +16,7 @@ class RecallBranch extends GenericAction {
         $applicant = $this->getApplicant();
 
         return self::redirectToTypeform(
-            JsonConfigObject::getItemByName(Config::BranchForms, $applicant->getBranch(), 'branch-id')['form-id'],
+            $this->airtable->get('Branches', $applicant->getBranch())->{'Typeform ID'},
             $applicant,
             $response);
     }
