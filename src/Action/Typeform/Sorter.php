@@ -37,14 +37,17 @@ class Sorter extends GenericTypeformAction {
 
         $event = Typeform::parseWebhook($request, $this->settings['typeform']['webhookSecret']);
 
-        if (!$event->valid)
+        if (!$event->valid) {
             return $response->withStatus(StatusCode::HTTP_UNAUTHORIZED);
+        }
 
-        if ($event->eventType != 'form_response')
+        if ($event->eventType != 'form_response') {
             return $response->withStatus(StatusCode::HTTP_NO_CONTENT);
+        }
 
-        if (!$this->parseTypeformEvent($event->formResponse))
+        if (!$this->parseTypeformEvent($event->formResponse)) {
             $this->log->addError(self::NO_SORTING_RESULT_FOUND_MSG);
+        }
 
         return $response->withStatus(StatusCode::HTTP_NO_CONTENT);
     }
@@ -60,15 +63,17 @@ class Sorter extends GenericTypeformAction {
         $applicant = $this->em->getRepository(Applicant::class)
             ->find($form->hidden['aid']);
 
-        if (empty($applicant))
+        if (empty($applicant)) {
             return false;
+        }
 
         $answer = end($form->answers);
 
         $sortingResult = $this->findResultByQuestion($answer);
 
-        if (empty($sortingResult))
+        if (empty($sortingResult)) {
             return false;
+        }
 
         $applicant->setBranch($sortingResult['branch-id']);
         $applicant->setMembershipType($sortingResult['plan-id']);
@@ -83,8 +88,9 @@ class Sorter extends GenericTypeformAction {
         foreach ($this->results as $result) {
 
             if ($result['question-id'] == $answer->field->id &&
-                strval($result['condition']) == $answer->answer)
+                strval($result['condition']) == $answer->answer) {
                 return $result;
+            }
         }
 
         return [];

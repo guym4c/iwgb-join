@@ -25,8 +25,9 @@ class FlowSuccess extends GenericGoCardlessAction {
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
-        if (empty($request->getQueryParam(self::FLOW_ID_PARAM_KEY)))
+        if (empty($request->getQueryParam(self::FLOW_ID_PARAM_KEY))) {
             return $response->withRedirect(self::INVALID_INPUT_RETURN_URL);
+        }
 
         $flow = $this->gocardless->redirectFlows()
             ->get($request->getQueryParam(self::FLOW_ID_PARAM_KEY));

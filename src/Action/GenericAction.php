@@ -68,8 +68,9 @@ abstract class GenericAction {
         $applicant = $this->em->getRepository(Applicant::class)
             ->find($this->session->get(self::SESSION_AID_KEY));
 
-        if (empty($applicant))
-            ;//error
+        if (empty($applicant)) {
+            //error
+        }
 
         return $applicant;
     }

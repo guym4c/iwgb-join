@@ -22,8 +22,9 @@ class CreateApplication extends GenericAction {
 
         //TODO jobs that bypass sorting
 
-        if (empty($job))
+        if (empty($job)) {
             return $response->withRedirect(self::INVALID_INPUT_RETURN_URL);
+        }
 
         $applicant = new Applicant();
         $this->persist($applicant)->flush();
