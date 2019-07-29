@@ -4,6 +4,7 @@
 namespace IWGB\Join\Action\GoCardless;
 
 use GoCardlessPro\Core\Exception\InvalidStateException;
+use GoCardlessPro\Resources\Customer;
 use Guym4c\Airtable\AirtableApiException;
 use IWGB\Join\Domain\AirtablePlanRecord;
 use IWGB\Join\Domain\Applicant;
@@ -41,9 +42,12 @@ class FlowSuccess extends GenericGoCardlessAction {
             ->complete($flow->id, $applicant->getSession());
 
         $bankAccount = $this->gocardless->customerBankAccounts()->get($flow->links['customer_bank_account']);
+        $customer = $this->gocardless->customers()->get($flow->links['customer']);
 
-        $record->{'Customer ID'} = $flow->links['customer'];
-        $record->{'Bank'} = $bankAccount->bank_name;
+        $record->{'Customer ID'} = $customer->id;
+        $record->Address = self::parseAddress($customer);
+        $record->Postcode = $customer->postal_code;
+        $record->Bank = $bankAccount->bank_name;
         $record->{'Bank account'} = "******{$bankAccount->account_number_ending}";
 
         $record->Status = self::AIRTABLE_CONFIRMED_STATUS;
@@ -67,5 +71,22 @@ class FlowSuccess extends GenericGoCardlessAction {
         ], $plan->getGoCardlessIntervalFormat())]);
 
         return $response->withRedirect(self::CONFIRMATION_REDIRECT_URL);
+    }
+
+    private static function parseAddress(Customer $customer): string {
+
+        $addressLines = [
+            $customer->address_line1,
+            $customer->address_line2,
+            $customer->address_line3,
+        ];
+
+        $address = '';
+        foreach ($addressLines as $line) {
+            if (!empty($line)) {
+                $address .= "$line,";
+            }
+        }
+        return substr($address, 0, -1);
     }
 }
