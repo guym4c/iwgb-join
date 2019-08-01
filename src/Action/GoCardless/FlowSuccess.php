@@ -38,11 +38,15 @@ class FlowSuccess extends GenericGoCardlessAction {
             ->findOneBy(['session' => $flow->session_token]);
         $record = $applicant->fetchRecord($this->airtable);
 
-        $flow = $this->gocardless->redirectFlows()
-            ->complete($flow->id, $applicant->getSession());
+        $this->gocardless->redirectFlows()->complete($flow->id, ['params' => [
+            'session_token' => $applicant->getSession(),
+        ]]);
 
-        $bankAccount = $this->gocardless->customerBankAccounts()->get($flow->links['customer_bank_account']);
-        $customer = $this->gocardless->customers()->get($flow->links['customer']);
+        $flow = $this->gocardless->redirectFlows()
+            ->get($request->getQueryParam(self::FLOW_ID_PARAM_KEY));
+
+        $bankAccount = $this->gocardless->customerBankAccounts()->get($flow->links->customer_bank_account);
+        $customer = $this->gocardless->customers()->get($flow->links->customer);
 
         $record->{'Customer ID'} = $customer->id;
         $record->Address = self::parseAddress($customer);
