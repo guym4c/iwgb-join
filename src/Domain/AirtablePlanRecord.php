@@ -1,6 +1,6 @@
 <?php
 
-namespace IWGB\Join\Domain;
+namespace Guym4c\Airtable;
 
 use Guym4c\Airtable\Loader;
 use Guym4c\Airtable\Record;
@@ -26,7 +26,7 @@ class AirtablePlanRecord {
     private $dayOfMonth;
 
     public function __construct(Record $record) {
-        foreach (get_object_vars($this) as $property) {
+        foreach (get_object_vars($this) as $property => $value) {
 
             if (empty($this->{$property})) {
                 $field = $record->{$this->filterPropertyName($property)};
@@ -40,12 +40,10 @@ class AirtablePlanRecord {
     }
 
     private function filterPropertyName(string $property) {
-        return preg_replace_callback('/([A-Z])/', function ($matches): array {
-            for ($i = 0; $i < count($matches); $i++) {
-                $matches[$i] = ' ' . strtolower($matches[$i]);
-            }
-            return $matches;
+        $property = preg_replace_callback('/([A-Z])/', function (array $matches): string {
+            return ' ' . strtolower($matches[0]);
         }, $property);
+        return strtoupper(substr($property, 0, 1)) . substr($property, 1);
     }
 
     public function getGoCardlessIntervalFormat(): array {
