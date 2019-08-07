@@ -17,7 +17,17 @@ class AirtableProvider implements ServiceProviderInterface {
         $c['airtable'] = function (Container $c): Airtable {
 
             /** @var $c TypeHinter */
-            return new Airtable($c->settings['airtable']['key'], $c->settings['airtable']['base']);
+            return new Airtable($c->settings['airtable']['key'], $c->settings['airtable']['base'], [
+                'Members' => [
+                    'Name',
+                    'Zapier-employer',
+                    'Zapier-workplace',
+                    'Zapier-branch',
+                    'Date record created',
+                    'How recent is this record',
+                    'Missed months',
+                ],
+            ]);
         };
     }
 }
