@@ -68,9 +68,9 @@ class FlowSuccess extends GenericGoCardlessAction {
             'amount'            => $plan->getAmount() * 100,
             'currency'          => 'GBP',
             'name'              => $planName,
-            'payment_reference' => self::BASE_PAYMENT_REFERENCE . '-' . $branch->{'Payment reference'},
+//            'payment_reference' => self::BASE_PAYMENT_REFERENCE . '-' . $branch->{'Payment reference'},
             'links'             => [
-                'mandate' => $flow->links['mandate'],
+                'mandate' => $flow->links->mandate,
             ],
         ], $plan->getGoCardlessIntervalFormat())]);
 

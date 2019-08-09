@@ -12,7 +12,7 @@
         "moontoast/math": "^1.1",
         "guzzlehttp/guzzle": "^6.3",
         "guym4c/typeform-api": "@dev",
-        "guym4c/airtable-client": "^1.0",
+        "guym4c/airtable-client": "^1.2",
         "bryanjhv/slim-session": "^3.6",
         "sentry/sdk": "^2.0"
     },

@@ -1,6 +1,6 @@
 <?php
 
-namespace Guym4c\Airtable;
+namespace IWGB\Join\Domain;
 
 use Guym4c\Airtable\Loader;
 use Guym4c\Airtable\Record;
