@@ -18,9 +18,7 @@ abstract class GenericGoCardlessAction extends GenericAction {
         /** @var $c TypeHinter */
         $this->gocardless = new GoCardlessPro\Client([
             'access_token' => $c->settings['gocardless']['accessToken'],
-            'environment' => $c->settings['dev']
-                ? Environment::SANDBOX
-                : Environment::LIVE,
+            'environment' => Environment::LIVE,
         ]);
     }
 

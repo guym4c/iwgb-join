@@ -13,7 +13,7 @@ use Slim\Http\Response;
 
 class CreateRedirectFlow extends GenericGoCardlessAction {
 
-    const SUCCESS_REDIRECT_URL = 'https://members.iwgb.org.uk/join/callback/gocardless/success';
+    const SUCCESS_REDIRECT_URL = 'https://members.iwgb.org.uk/callback/gocardless/success';
 
     /**
      * {@inheritdoc}
