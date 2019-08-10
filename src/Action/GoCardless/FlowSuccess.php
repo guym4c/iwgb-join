@@ -4,7 +4,6 @@
 namespace IWGB\Join\Action\GoCardless;
 
 use GoCardlessPro\Core\Exception\InvalidStateException;
-use GoCardlessPro\Resources\Customer;
 use Guym4c\Airtable\AirtableApiException;
 use IWGB\Join\Domain\AirtablePlanRecord;
 use IWGB\Join\Domain\Applicant;
@@ -49,7 +48,9 @@ class FlowSuccess extends GenericGoCardlessAction {
         $customer = $this->gocardless->customers()->get($flow->links->customer);
 
         $record->{'Customer ID'} = $customer->id;
-        $record->Address = self::parseAddress($customer);
+        $record->{'Address L1'} = $customer->address_line1;
+        $record->{'Address L2'} = $customer->address_line2;
+        $record->{'Address L3'} = $customer->address_line3;
         $record->Postcode = $customer->postal_code;
         $record->Bank = $bankAccount->bank_name;
         $record->{'Bank account'} = "******{$bankAccount->account_number_ending}";
@@ -65,32 +66,15 @@ class FlowSuccess extends GenericGoCardlessAction {
         $planName = "{$branch->Name}: {$plan->getPlanName()}";
 
         $this->gocardless->subscriptions()->create(['params' => array_merge([
-            'amount'            => $plan->getAmount() * 100,
-            'currency'          => 'GBP',
-            'name'              => $planName,
-//            'payment_reference' => self::BASE_PAYMENT_REFERENCE . '-' . $branch->{'Payment reference'},
-            'links'             => [
+            'amount'   => $plan->getAmount() * 100,
+            'currency' => 'GBP',
+            'name'     => $planName,
+            //            'payment_reference' => self::BASE_PAYMENT_REFERENCE . '-' . $branch->{'Payment reference'},
+            'links'    => [
                 'mandate' => $flow->links->mandate,
             ],
         ], $plan->getGoCardlessIntervalFormat())]);
 
         return $response->withRedirect(self::CONFIRMATION_REDIRECT_URL);
-    }
-
-    private static function parseAddress(Customer $customer): string {
-
-        $addressLines = [
-            $customer->address_line1,
-            $customer->address_line2,
-            $customer->address_line3,
-        ];
-
-        $address = '';
-        foreach ($addressLines as $line) {
-            if (!empty($line)) {
-                $address .= "$line,";
-            }
-        }
-        return substr($address, 0, -1);
     }
 }
