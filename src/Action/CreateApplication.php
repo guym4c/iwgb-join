@@ -20,8 +20,6 @@ class CreateApplication extends GenericAction {
 
         $job = JsonConfigObject::getItemByName(Config::JobTypes, $args['slug'], 'slug');
 
-        //TODO jobs that bypass sorting
-
         if (empty($job)) {
             return $response->withRedirect(self::INVALID_INPUT_RETURN_URL);
         }
@@ -29,6 +27,14 @@ class CreateApplication extends GenericAction {
         $applicant = new Applicant();
         $this->persist($applicant)->flush();
         $this->session->set(self::SESSION_AID_KEY, $applicant->getId());
+
+        if (!empty($job['bypass-sorter']) &&
+            $job['bypass-sorter']) {
+            $applicant->setBranch($job['branch-id']);
+            $applicant->setMembershipType($job['membership-id']);
+            $this->em->flush();
+            return self::redirectToTypeform($this->settings['typeform']['core-questions-id'], $applicant, $response);
+        }
 
         return self::redirectToTypeform($job['typeform-id'], $applicant, $response);
     }
