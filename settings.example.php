@@ -8,7 +8,7 @@ return [
 
     'dev' => true,
 
-    'displayErrorDetails' => true,
+    'displayErrorDetails'               => true,
     'determineRouteBeforeAppMiddleware' => false,
 
     'gocardless' => [
@@ -36,12 +36,18 @@ return [
             'dbname' => '',
         ], $keys['db']),
     ],
-    'typeform' => [
-        'webhookSecret' => $keys['typeform']['webhook'],
-        'api'           => $keys['typeform']['api'],
+    'typeform'   => [
+        'webhookSecret'     => $keys['typeform']['webhook'],
+        'api'               => $keys['typeform']['api'],
+        'core-questions-id' => '',
     ],
     'airtable'   => [
         'key'  => $keys['airtable'],
         'base' => '',
+    ],
+    'twig'       => [
+        'templates_dir' => APP_ROOT . '/view/',
+        'cache_dir'     => APP_ROOT . '/var/twig',
+        'debug'         => true,
     ],
 ];
