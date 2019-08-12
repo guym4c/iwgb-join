@@ -59,7 +59,7 @@ class FlowSuccess extends GenericGoCardlessAction {
         $this->airtable->update($record);
 
         $plan = new AirtablePlanRecord(
-            $this->airtable->get('Plans', $applicant->getMembershipType()));
+            $this->airtable->get('Plans', $applicant->getPlan()));
 
         $branch = $this->airtable->get('Branches', $plan->getBranchId());
 

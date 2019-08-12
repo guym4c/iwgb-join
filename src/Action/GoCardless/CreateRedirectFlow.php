@@ -28,7 +28,7 @@ class CreateRedirectFlow extends GenericGoCardlessAction {
         $record = $applicant->fetchRecord($this->airtable);
         $this->em->flush();
 
-        $plan = $this->airtable->get('Plans', $applicant->getMembershipType());
+        $plan = $this->airtable->get('Plans', $applicant->getPlan());
 
         $flow = $this->gocardless->redirectFlows()->create(['params' => [
             'session_token'        => $applicant->getSession(),

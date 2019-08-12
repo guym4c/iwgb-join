@@ -31,7 +31,7 @@ class CreateApplication extends GenericAction {
         if (!empty($job['bypass-sorter']) &&
             $job['bypass-sorter']) {
             $applicant->setBranch($job['branch-id']);
-            $applicant->setMembershipType($job['membership-id']);
+            $applicant->setPlan($job['membership-id']);
             $this->em->flush();
             return self::redirectToTypeform($this->settings['typeform']['core-questions-id'], $applicant, $response);
         }
