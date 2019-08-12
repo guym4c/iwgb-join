@@ -10,6 +10,10 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "description": {
+                    "description": "Optionally, describe what this sorter result is for",
+                    "type": "string"
+                },
                 "form-id": {
                     "description": "The Typeform form ID",
                     "$ref": "utils.schema.json#/definitions/typeform-form-id"
@@ -26,13 +30,9 @@
                 "plan-id": {
                     "description": "The Airtable plan ID",
                     "$ref": "utils.schema.json#/definitions/airtable-id"
-                },
-                "branch-id": {
-                    "description": "The Airtable branch record ID",
-                    "$ref": "utils.schema.json#/definitions/airtable-id"
                 }
             },
-            "required": ["form-id", "question-id", "condition", "plan-id", "branch-id"]
+            "required": ["form-id", "question-id", "condition", "plan-id"]
         }
     },
     "properties": {

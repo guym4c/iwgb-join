@@ -1,9 +1,11 @@
 <?php
+/** @noinspection PhpUndefinedFieldInspection */
 
 namespace IWGB\Join\Action\Typeform;
 
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Guym4c\Airtable\AirtableApiException;
 use Guym4c\TypeformAPI\Model\Answer;
 use Guym4c\TypeformAPI\Model\FormResponse;
 use Guym4c\TypeformAPI\Typeform;
@@ -32,6 +34,7 @@ class Sorter extends GenericTypeformAction {
      * {@inheritdoc}
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws AirtableApiException
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
@@ -57,6 +60,7 @@ class Sorter extends GenericTypeformAction {
      * @return bool
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws AirtableApiException
      */
     private function parseTypeformEvent(FormResponse $form): bool {
         /** @var Applicant $applicant */
@@ -75,9 +79,9 @@ class Sorter extends GenericTypeformAction {
             return false;
         }
 
-        $applicant->setBranch($sortingResult['branch-id']);
-        $applicant->setMembershipType($sortingResult['plan-id']);
-
+        $applicant->setPlan($sortingResult['plan-id']);
+        $plan = $this->airtable->get('Plans', $sortingResult['plan-id']);
+        $applicant->setBranch($plan->Branch->load('Branches')->getId());
         $this->em->flush();
 
         return true;

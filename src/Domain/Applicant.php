@@ -22,7 +22,8 @@ class Applicant {
      *
      * @ORM\Column
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="\IWGB\Join\Domain\UuidGenerator")
      */
     protected $id;
 
@@ -44,7 +45,7 @@ class Applicant {
      *
      * @ORM\Column(nullable = true)
      */
-    protected $membershipType;
+    protected $plan;
 
     /**
      * @var ?string
@@ -107,15 +108,15 @@ class Applicant {
     /**
      * @return string|null
      */
-    public function getMembershipType(): ?string {
-        return $this->membershipType;
+    public function getPlan(): ?string {
+        return $this->plan;
     }
 
     /**
-     * @param string|null $membershipType
+     * @param string|null $plan
      */
-    public function setMembershipType(?string $membershipType): void {
-        $this->membershipType = $membershipType;
+    public function setPlan(?string $plan): void {
+        $this->plan = $plan;
     }
 
     /**
