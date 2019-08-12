@@ -2,6 +2,7 @@
 
 namespace IWGB\Join\Action;
 
+use Guym4c\Airtable\AirtableApiException;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -10,6 +11,7 @@ class RecallBranch extends GenericAction {
 
     /**
      * {@inheritdoc}
+     * @throws AirtableApiException
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 

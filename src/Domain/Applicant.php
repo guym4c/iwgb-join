@@ -22,7 +22,8 @@ class Applicant {
      *
      * @ORM\Column
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="\IWGB\Join\Domain\UuidGenerator")
      */
     protected $id;
 
