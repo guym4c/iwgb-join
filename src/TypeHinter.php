@@ -5,6 +5,7 @@ namespace IWGB\Join;
 use Doctrine\ORM\EntityManager;
 use Guym4c\Airtable\Airtable;
 use Monolog\Logger;
+use Slim\Views\Twig;
 use SlimSession\Helper;
 
 class TypeHinter {
@@ -23,5 +24,8 @@ class TypeHinter {
 
     /** @var Helper */
     public $session;
+
+    /** @var Twig */
+    public $view;
 
 }
