@@ -16,7 +16,7 @@ class FlowSuccess extends GenericGoCardlessAction {
     const FLOW_ID_PARAM_KEY = 'redirect_flow_id';
     const AIRTABLE_CONFIRMED_STATUS = 'Member';
     const BASE_PAYMENT_REFERENCE = 'IWGB';
-    const CONFIRMATION_REDIRECT_URL = '';
+    const CONFIRMATION_REDIRECT_URL = 'https://iwgb.org.uk/auth/login?m=Member%20signup%20test%20successful';
 
     /**
      * {@inheritdoc}
@@ -74,6 +74,8 @@ class FlowSuccess extends GenericGoCardlessAction {
                 'mandate' => $flow->links->mandate,
             ],
         ], $plan->getGoCardlessIntervalFormat())]);
+
+        $this->session->clear();
 
         return $response->withRedirect(self::CONFIRMATION_REDIRECT_URL);
     }
