@@ -5,9 +5,10 @@ namespace IWGB\Join\Action\Typeform;
 
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Exception;
 use Guym4c\Airtable\AirtableApiException;
-use Guym4c\TypeformAPI\Model\Answer;
-use Guym4c\TypeformAPI\Model\FormResponse;
+use Guym4c\TypeformAPI\Model\Webhook\Answer;
+use Guym4c\TypeformAPI\Model\Webhook\FormResponse;
 use Guym4c\TypeformAPI\Typeform;
 use IWGB\Join\Config;
 use IWGB\Join\Domain\Applicant;
@@ -35,6 +36,7 @@ class Sorter extends GenericTypeformAction {
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws AirtableApiException
+     * @throws Exception
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
