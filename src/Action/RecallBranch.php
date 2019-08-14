@@ -17,6 +17,10 @@ class RecallBranch extends GenericAction {
 
         $applicant = $this->getApplicant();
 
+        if (empty($applicant)) {
+            return $this->returnError($response, 'Invalid session');
+        }
+
         return self::redirectToTypeform(
             $this->airtable->get('Branches', $applicant->getBranch())->{'Typeform ID'},
             $applicant,
