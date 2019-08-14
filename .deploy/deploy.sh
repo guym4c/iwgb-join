@@ -7,9 +7,11 @@ git checkout --force "origin/master"
 
 rsync -a . /var/www/members.iwgb.org.uk --delete --exclude .git --exclude .deploy --exclude vendor
 
+# shellcheck disable=SC2164
 cd /var/repo/members.iwgb.org.uk-static
 rsync -a . /var/www/members.iwgb.org.uk
 
+# shellcheck disable=SC2164
 cd /var/www/members.iwgb.org.uk
 export COMPOSER_HOME=/usr/local/bin
 composer install
