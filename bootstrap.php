@@ -10,9 +10,7 @@ require APP_ROOT . '/vendor/autoload.php';
 $c = new Container(require __DIR__ . '/settings.php');
 
 if (!$c->settings['dev']) {
-    Sentry\init([
-        'dsn' => $c['settings']['sentry']['dsn'],
-    ]);
+    Sentry\init(['dsn' => $c['settings']['sentry']['dsn']]);
 }
 
 $c->register(new Provider\Doctrine())

@@ -7,6 +7,8 @@ use Doctrine\ORM\ORMException;
 use IWGB\Join\Domain\Applicant;
 use IWGB\Join\TypeHinter;
 use Psr\Http\Message\ResponseInterface;
+use Sentry;
+use Sentry\State\Scope;
 use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -23,6 +25,7 @@ abstract class GenericAction {
 
     protected $session;
 
+    const ERROR_RETURN_URL = 'https://iwgb.org.uk/auth/login';
     const INVALID_INPUT_RETURN_URL = 'https://iwgb.org.uk/join';
     const TYPEFORM_FORM_BASE_URL = 'https://iwgb.typeform.com/to';
     const SESSION_AID_KEY = 'applicant';
@@ -62,16 +65,27 @@ abstract class GenericAction {
             self::TYPEFORM_FORM_BASE_URL));
     }
 
-    protected function getApplicant(): Applicant {
+    protected function getApplicant(): ?Applicant {
 
         /** @var Applicant $applicant */
         $applicant = $this->em->getRepository(Applicant::class)
             ->find($this->session->get(self::SESSION_AID_KEY));
 
         if (empty($applicant)) {
-            //error
+            $this->log->addNotice("Applicant {$this->session->get(self::SESSION_AID_KEY)} not found");
+            return null;
         }
 
+        Sentry\configureScope(function (Scope $scope) use ($applicant): void {
+            $scope->setUser(['id' => $applicant->getId()]);
+        });
+
         return $applicant;
+    }
+
+    protected function returnError(Response $response, string $error): ResponseInterface {
+        return $response->withRedirect(self::ERROR_RETURN_URL . '?' . http_build_query([
+                'e' => $error,
+            ]));
     }
 }

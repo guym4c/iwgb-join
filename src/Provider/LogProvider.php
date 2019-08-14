@@ -18,8 +18,8 @@ class LogProvider  implements ServiceProviderInterface {
     public function register(Container $c) {
 
         $c['log'] = function (): Logger {
-            $log = new Logger('log');
-            $log->pushHandler(new StreamHandler(APP_ROOT . '/log/info.log', Logger::INFO));
+            $log = new Logger('applications');
+            $log->pushHandler(new StreamHandler(APP_ROOT . '/var/log/applications.log', Logger::INFO));
             return $log;
         };
     }
