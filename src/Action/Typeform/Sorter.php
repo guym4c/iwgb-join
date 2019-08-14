@@ -42,7 +42,10 @@ class Sorter extends GenericTypeformAction {
 
         $event = Typeform::parseWebhook($request, $this->settings['typeform']['webhookSecret']);
 
+        $this->log->addDebug('Received Typeform event', ['event' => $event->id]);
+
         if (!$event->valid) {
+            $this->log->addNotice('Typeform event signature invalid', ['event' => $event->id]);
             return $response->withStatus(StatusCode::HTTP_UNAUTHORIZED);
         }
 
@@ -70,6 +73,10 @@ class Sorter extends GenericTypeformAction {
             ->find($form->hidden['aid']);
 
         if (empty($applicant)) {
+            $this->log->addError('AID not found in response', [
+                'form'      => $form->formId,
+                'submitted' => $form->submittedAt->format(DATE_ATOM),
+            ]);
             return false;
         }
 
@@ -78,6 +85,11 @@ class Sorter extends GenericTypeformAction {
         $sortingResult = $this->findResultByQuestion($answer);
 
         if (empty($sortingResult)) {
+            $this->log->addError('Unable to sort applicant', [
+                'form'      => $form->formId,
+                'submitted' => $form->submittedAt->format(DATE_ATOM),
+                'applicant' => $applicant->getId(),
+            ]);
             return false;
         }
 
@@ -85,6 +97,11 @@ class Sorter extends GenericTypeformAction {
         $plan = $this->airtable->get('Plans', $sortingResult['plan-id']);
         $applicant->setBranch($plan->Branch->load('Branches')->getId());
         $this->em->flush();
+
+        $this->log->addDebug('Applicant sorted into plan', [
+            'plan'      => $plan->Name,
+            'applicant' => $applicant->getId(),
+        ]);
 
         return true;
     }

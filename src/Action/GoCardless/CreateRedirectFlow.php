@@ -46,6 +46,11 @@ class CreateRedirectFlow extends GenericGoCardlessAction {
             ],
         ]]);
 
+        $this->log->addDebug('Redirecting applicant to payment', [
+            'applicant' => $applicant->getId(),
+            'flow'      => $flow->id,
+        ]);
+
         return $response->withRedirect($flow->redirect_url);
     }
 }

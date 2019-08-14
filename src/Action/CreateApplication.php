@@ -30,6 +30,7 @@ class CreateApplication extends GenericAction {
         $applicant = new Applicant();
         $this->persist($applicant)->flush();
         $this->session->set(self::SESSION_AID_KEY, $applicant->getId());
+        $this->log->addDebug('Applicant created', ['aid' => $applicant->getId()]);
 
         if (!$jobType->Sort) {
             /** @var Record $plan */
@@ -37,6 +38,11 @@ class CreateApplication extends GenericAction {
             $applicant->setPlan($plan->getId());
             $applicant->setBranch($plan->Branch->load('Branches')->getId());
             $this->em->flush();
+
+            $this->log->addDebug('Applicant placed into plan', [
+                'plan' => $plan->Name,
+                'aid' => $applicant->getId(),
+            ]);
 
             return self::redirectToTypeform($this->settings['typeform']['core-questions-id'], $applicant, $response);
         }

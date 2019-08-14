@@ -16,4 +16,5 @@ composer install
 composer update
 mkdir var
 mkdir var/doctrine
+mkdir var/log
 chmod -R 777 var
