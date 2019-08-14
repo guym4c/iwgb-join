@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUndefinedFieldInspection */
 
 namespace IWGB\Join\Action;
 
@@ -21,8 +22,15 @@ class RecallBranch extends GenericAction {
             return $this->returnError($response, 'Invalid session');
         }
 
+        $branch = $this->airtable->get('Branches', $applicant->getBranch());
+
+        $this->log->addDebug('Redirecting applicant to Branch form', [
+            'applicant' => $applicant->getId(),
+            'branch' => $branch->Name,
+        ]);
+
         return self::redirectToTypeform(
-            $this->airtable->get('Branches', $applicant->getBranch())->{'Typeform ID'},
+            $branch->{'Typeform ID'},
             $applicant,
             $response);
     }
