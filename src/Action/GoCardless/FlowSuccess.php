@@ -51,6 +51,7 @@ class FlowSuccess extends GenericGoCardlessAction {
         $record->{'Address L1'} = $customer->address_line1;
         $record->{'Address L2'} = $customer->address_line2;
         $record->{'Address L3'} = $customer->address_line3;
+        $record->{'Address city'} = $customer->city;
         $record->Postcode = $customer->postal_code;
         $record->Bank = $bankAccount->bank_name;
         $record->{'Bank account'} = "******{$bankAccount->account_number_ending}";
