@@ -31,24 +31,40 @@ class GoCardlessEvent extends GenericGoCardlessAction {
         }
 
         foreach ($events as $event) {
-
-
             /** @var $event GoCardless\Resources\Event */
+
+            $this->log->addDebug('Processing GoCardless event', [
+                'event' => $event->id,
+            ]);
+
             switch ($event->action) {
                 case 'failed':
+
+                    $memberId = $this->getMemberFromPayment($this->gocardless->payments()
+                        ->get($event->links->payment))->getId();
+
+                    $this->log->addDebug('Adding missed payment to Airtable', [
+                        'event'  => $event->id,
+                        'member' => $memberId,
+                    ]);
 
                     $this->airtable->create('Missed Payments', [
                         'GoCardless ID' => $event->id,
                         'Reason'        => $event->details->cause,
                         'Reason detail' => $event->details->description,
-                        'Member'        => [$this->getMemberFromPayment($this->gocardless->payments()
-                            ->get($event->links->payment))->getId()],
+                        'Member'        => [$memberId],
                     ]);
                     break;
 
                 case 'cancelled':
                     $member = $this->getMemberFromPayment($this->gocardless->payments()
                         ->get($event->links->payment));
+
+                    $this->log->debug('Marking member status cancelled', [
+                        'event' => $event->id,
+                        'member' => $member->getId(),
+                    ]);
+
                     $member->Status = 'Cancelled';
                     $this->airtable->update($member);
             }
@@ -65,6 +81,6 @@ class GoCardlessEvent extends GenericGoCardlessAction {
     private function getMemberFromPayment(GoCardless\Resources\Payment $payment): Record {
         return $this->airtable->list('Members', (new ListFilter())
             ->setFormula("SEARCH('{$this->gocardless->mandates()->get($payment->links->mandate)->links->customer}', {Customer ID})"))
-                      ->getRecords()[0];
+                   ->getRecords()[0];
     }
 }

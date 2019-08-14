@@ -19,7 +19,7 @@ class LogProvider  implements ServiceProviderInterface {
 
         $c['log'] = function (): Logger {
             $log = new Logger('applications');
-            $log->pushHandler(new StreamHandler(APP_ROOT . '/var/log/applications.log', Logger::INFO));
+            $log->pushHandler(new StreamHandler(APP_ROOT . '/var/log/applications.log', Logger::DEBUG));
             return $log;
         };
     }

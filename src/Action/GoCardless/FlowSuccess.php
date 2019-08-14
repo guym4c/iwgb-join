@@ -26,6 +26,7 @@ class FlowSuccess extends GenericGoCardlessAction {
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
         if (empty($request->getQueryParam(self::FLOW_ID_PARAM_KEY))) {
+            $this->log->addNotice('Payment page called with no Flow ID');
             return $response->withRedirect(self::INVALID_INPUT_RETURN_URL);
         }
 
@@ -36,6 +37,11 @@ class FlowSuccess extends GenericGoCardlessAction {
         $applicant = $this->em->getRepository(Applicant::class)
             ->findOneBy(['session' => $flow->session_token]);
         $record = $applicant->fetchRecord($this->airtable);
+
+        $this->log->addDebug('Completing redirect flow', [
+            'applicant' => $applicant->getId(),
+            'flow'      => $flow->id,
+        ]);
 
         $this->gocardless->redirectFlows()->complete($flow->id, ['params' => [
             'session_token' => $applicant->getSession(),
@@ -59,6 +65,11 @@ class FlowSuccess extends GenericGoCardlessAction {
         $record->Status = self::AIRTABLE_CONFIRMED_STATUS;
         $this->airtable->update($record);
 
+        $this->log->addDebug('Updated applicant as Confirmed', [
+            'applicant' => $applicant->getId(),
+            'record'    => $record->getId(),
+        ]);
+
         $plan = new AirtablePlanRecord(
             $this->airtable->get('Plans', $applicant->getPlan()));
 
@@ -66,7 +77,7 @@ class FlowSuccess extends GenericGoCardlessAction {
 
         $planName = "{$branch->Name}: {$plan->getPlanName()}";
 
-        $this->gocardless->subscriptions()->create(['params' => array_merge([
+        $subscription = $this->gocardless->subscriptions()->create(['params' => array_merge([
             'amount'   => $plan->getAmount() * 100,
             'currency' => 'GBP',
             'name'     => $planName,
@@ -75,6 +86,11 @@ class FlowSuccess extends GenericGoCardlessAction {
                 'mandate' => $flow->links->mandate,
             ],
         ], $plan->getGoCardlessIntervalFormat())]);
+
+        $this->log->addDebug('Created subscription', [
+            'applicant'    => $applicant->getId(),
+            'subscription' => $subscription->id,
+        ]);
 
         $this->session->clear();
 

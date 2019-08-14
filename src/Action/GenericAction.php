@@ -84,6 +84,7 @@ abstract class GenericAction {
     }
 
     protected function returnError(Response $response, string $error): ResponseInterface {
+        $this->log->addError($error);
         return $response->withRedirect(self::ERROR_RETURN_URL . '?' . http_build_query([
                 'e' => $error,
             ]));
