@@ -60,8 +60,11 @@ abstract class GenericAction {
         return $this->em;
     }
 
-    protected static function redirectToTypeform(string $formId, Applicant $applicant, Response $response): ResponseInterface {
-        return $response->withRedirect(sprintf("%s/{$formId}?aid={$applicant->getId()}",
+    protected static function redirectToTypeform(string $formId, Applicant $applicant, Response $response, array $query = []): ResponseInterface {
+        $queryString = http_build_query(array_merge($query, [
+            'aid' => $applicant->getId(),
+        ]));
+        return $response->withRedirect(sprintf("%s/{$formId}?{$queryString}",
             self::TYPEFORM_FORM_BASE_URL));
     }
 

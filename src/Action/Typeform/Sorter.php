@@ -110,8 +110,17 @@ class Sorter extends GenericTypeformAction {
 
         foreach ($this->results as $result) {
 
+            $condition = $result['condition'];
+            if (in_array($condition, ['true', 'false'])) {
+                $condition = $condition == 'true'
+                    ? true
+                    : false;
+            } else {
+                $condition = strval($condition);
+            }
+
             if ($result['question-id'] == $answer->field->id &&
-                strval($result['condition']) == $answer->answer) {
+                $condition == $answer->answer) {
                 return $result;
             }
         }
