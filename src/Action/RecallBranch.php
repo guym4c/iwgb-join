@@ -23,15 +23,15 @@ class RecallBranch extends GenericAction {
         }
 
         $branch = $this->airtable->get('Branches', $applicant->getBranch());
+        $plan = $this->airtable->get('Plans', $applicant->getPlan());
 
         $this->log->addDebug('Redirecting applicant to Branch form', [
             'applicant' => $applicant->getId(),
             'branch' => $branch->Name,
         ]);
 
-        return self::redirectToTypeform(
-            $branch->{'Typeform ID'},
-            $applicant,
-            $response);
+        return self::redirectToTypeform($branch->{'Typeform ID'}, $applicant, $response, [
+            'amount' => $plan->Amount,
+        ]);
     }
 }
