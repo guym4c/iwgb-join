@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Guym4c\Airtable\Airtable;
 use Guym4c\Airtable\AirtableApiException;
-use Guym4c\Airtable\ListFilter;
 use Guym4c\Airtable\Record;
 use Ramsey\Uuid\Uuid;
 
@@ -143,9 +142,8 @@ class Applicant {
         if (!empty($this->airtableId)) {
             return $airtable->get('Members', $this->airtableId);
         } else {
-            $record = $airtable->list('Members', (new ListFilter())
-                ->setFormula("SEARCH('{$this->id}', {Applicant ID})"))
-                       ->getRecords()[0];
+            $record = $airtable->search('Members', 'Applicant ID', $this->id)
+                          ->getRecords()[0];
             $this->airtableId = $record->getId();
             return $record;
         }

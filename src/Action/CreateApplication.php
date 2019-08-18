@@ -4,7 +4,6 @@
 namespace IWGB\Join\Action;
 
 use Exception;
-use Guym4c\Airtable\ListFilter;
 use Guym4c\Airtable\Record;
 use IWGB\Join\Domain\Applicant;
 use Psr\Http\Message\ResponseInterface;
@@ -19,9 +18,8 @@ class CreateApplication extends GenericAction {
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
-        $jobType = $this->airtable->list('Job types', (new ListFilter())
-            ->setFormula("SEARCH('{$args['slug']}', {Slug})"))
-                      ->getRecords()[0] ?? null;
+        $jobType = $this->airtable->search('Job types', 'Slug', $args['slug'])
+                       ->getRecords()[0] ?? null;
 
         if (empty($jobType)) {
             return $response->withRedirect(self::INVALID_INPUT_RETURN_URL);
@@ -41,7 +39,7 @@ class CreateApplication extends GenericAction {
 
             $this->log->addDebug('Applicant placed into plan', [
                 'plan' => $plan->Name,
-                'aid' => $applicant->getId(),
+                'aid'  => $applicant->getId(),
             ]);
 
             return self::redirectToTypeform($this->settings['typeform']['core-questions-id'], $applicant, $response);

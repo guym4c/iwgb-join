@@ -21,4 +21,7 @@ composer update
 mkdir var
 mkdir var/doctrine
 mkdir var/log
+mkdir var/cache
+mkdir var/cache/twig
+mkdir var/cache/airtable
 chmod -R 777 var
