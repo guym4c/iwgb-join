@@ -70,6 +70,11 @@ abstract class GenericAction {
 
     protected function getApplicant(): ?Applicant {
 
+        if (!$this->session->exists(self::SESSION_AID_KEY)) {
+            $this->log->addNotice('No session found');
+            return null;
+        }
+
         /** @var Applicant $applicant */
         $applicant = $this->em->getRepository(Applicant::class)
             ->find($this->session->get(self::SESSION_AID_KEY));

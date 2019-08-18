@@ -120,7 +120,8 @@ class Sorter extends GenericTypeformAction {
             }
 
             if ($result['question-id'] == $answer->field->id &&
-                $condition == $answer->answer) {
+                ($condition == $answer->answer ||
+                    $condition == $answer->answer['label'] ?? null)) {
                 return $result;
             }
         }
