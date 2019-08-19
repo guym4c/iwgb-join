@@ -5,7 +5,6 @@ namespace IWGB\Join\Action\GoCardless;
 
 use GoCardlessPro as GoCardless;
 use Guym4c\Airtable\AirtableApiException;
-use Guym4c\Airtable\ListFilter;
 use Guym4c\Airtable\Record;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
@@ -61,7 +60,7 @@ class GoCardlessEvent extends GenericGoCardlessAction {
                         ->get($event->links->payment));
 
                     $this->log->debug('Marking member status cancelled', [
-                        'event' => $event->id,
+                        'event'  => $event->id,
                         'member' => $member->getId(),
                     ]);
 
@@ -79,8 +78,8 @@ class GoCardlessEvent extends GenericGoCardlessAction {
      * @throws AirtableApiException
      */
     private function getMemberFromPayment(GoCardless\Resources\Payment $payment): Record {
-        return $this->airtable->list('Members', (new ListFilter())
-            ->setFormula("SEARCH('{$this->gocardless->mandates()->get($payment->links->mandate)->links->customer}', {Customer ID})"))
+        return $this->airtable->search('Members', 'Customer ID',
+            $this->gocardless->mandates()->get($payment->links->mandate)->links->customer)
                    ->getRecords()[0];
     }
 }
