@@ -14,7 +14,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @ORM\Entity
  */
-class Applicant {
+class Applicant extends AbstractAirtableMember {
 
     /**
      * @var string
@@ -46,11 +46,6 @@ class Applicant {
      */
     protected $plan;
 
-    /**
-     * @var ?string
-     *
-     * @ORM\Column(nullable = true)
-     */
     protected $airtableId;
 
     /**
@@ -116,36 +111,5 @@ class Applicant {
      */
     public function setPlan(?string $plan): void {
         $this->plan = $plan;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getAirtableId(): ?string {
-        return $this->airtableId;
-    }
-
-    /**
-     * @param ?string $airtableId
-     */
-    public function setAirtableId($airtableId): void {
-        $this->airtableId = $airtableId;
-    }
-
-    /**
-     * @param Airtable $airtable
-     * @return Record
-     * @throws AirtableApiException
-     */
-    public function fetchRecord(Airtable $airtable): Record {
-
-        if (!empty($this->airtableId)) {
-            return $airtable->get('Members', $this->airtableId);
-        } else {
-            $record = $airtable->search('Members', 'Applicant ID', $this->id)
-                          ->getRecords()[0];
-            $this->airtableId = $record->getId();
-            return $record;
-        }
     }
 }

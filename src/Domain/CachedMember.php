@@ -1,14 +1,16 @@
 <?php
+/** @noinspection PhpUndefinedFieldInspection */
 
 
 namespace IWGB\Join\Domain;
 
 use Doctrine\ORM\Mapping as ORM;
+use Guym4c\Airtable\Record;
 
 /**
  * @ORM\Entity
  */
-class CachedMember {
+class CachedMember extends AbstractAirtableMember {
 
     /**
      * @var string
@@ -35,25 +37,44 @@ class CachedMember {
     protected $phone;
 
     /**
-     * @var ?string
+     * @var array
      *
-     * @var\Column(nullable = true)
+     * @ORM\Column
      */
-    protected $workplace;
+    protected $workplaces = [];
 
     /**
-     * @var ?string
+     * @var array
      *
-     * @var\Column(nullable = true)
+     * @ORM\Column
      */
-    protected $employer;
+    protected $employers = [];
 
     /**
      * @var string
      *
-     * @var\Column
+     * @ORM\Column
      */
     protected $status;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column
+     */
+    protected $actionNetworkId;
+
+    public static function fromAirtable(Record $record): self {
+        $member = new self();
+
+        $member->setEmail($record->Email);
+        $member->setPhone($record->Mobile);
+        $member->setWorkplaces(self::parseNameArray($record, 'Workplace', 'Workplaces'));
+        $member->setEmployers(self::parseNameArray($record, 'Employer', 'Employers'));
+        $member->setActionNetworkId($record->{'ActionNetwork ID'});
+
+        return $member;
+    }
 
     /**
      * @return string
@@ -61,7 +82,6 @@ class CachedMember {
     public function getId(): string {
         return $this->id;
     }
-
 
     /**
      * @return string
@@ -92,31 +112,31 @@ class CachedMember {
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getWorkplace() {
-        return $this->workplace;
+    public function getWorkplaces(): array {
+        return $this->workplaces;
     }
 
     /**
-     * @param mixed $workplace
+     * @param array $workplaces
      */
-    public function setWorkplace($workplace): void {
-        $this->workplace = $workplace;
+    public function setWorkplaces(array $workplaces): void {
+        $this->workplaces = $workplaces;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getEmployer() {
-        return $this->employer;
+    public function getEmployers(): array {
+        return $this->employers;
     }
 
     /**
-     * @param mixed $employer
+     * @param array $employers
      */
-    public function setEmployer($employer): void {
-        $this->employer = $employer;
+    public function setEmployers(array $employers): void {
+        $this->employers = $employers;
     }
 
     /**
@@ -131,5 +151,47 @@ class CachedMember {
      */
     public function setStatus(string $status): void {
         $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionNetworkId(): string {
+        return $this->actionNetworkId;
+    }
+
+    /**
+     * @param string $actionNetworkId
+     */
+    public function setActionNetworkId(string $actionNetworkId): void {
+        $this->actionNetworkId = $actionNetworkId;
+    }
+
+    private static function parseNameArray(Record $record, string $field, string $targetTable): array {
+
+        $names = [];
+        if (!self::isEmpty($record->$field)) {
+
+            $records = $record->load($field, $targetTable);
+
+            if (is_array($records)) {
+                foreach ($records as $record) {
+                    $names[] = $record->Name;
+                }
+            } else {
+                $names[] = $record->Name;
+            }
+        }
+
+        return $names;
+    }
+
+    private static function isEmpty($field): bool {
+        if (is_array($field) &&
+            count($field) == 1) {
+
+                return empty($field[0]);
+        }
+        return empty($field);
     }
 }
