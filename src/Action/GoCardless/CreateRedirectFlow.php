@@ -13,7 +13,7 @@ use Slim\Http\Response;
 
 class CreateRedirectFlow extends GenericGoCardlessAction {
 
-    const SUCCESS_REDIRECT_URL = 'https://members.iwgb.org.uk/callback/gocardless/success';
+    private const SUCCESS_REDIRECT_URL = 'https://members.iwgb.org.uk/callback/gocardless/confirm';
 
     /**
      * {@inheritdoc}
@@ -24,7 +24,7 @@ class CreateRedirectFlow extends GenericGoCardlessAction {
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
-        $applicant = $this->getApplicant();
+        $applicant = $this->getApplicant($args);
 
         if (empty($applicant)) {
             return $this->returnError($response, 'Invalid session');
