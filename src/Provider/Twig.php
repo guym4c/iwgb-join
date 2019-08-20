@@ -7,7 +7,6 @@ use Pimple\ServiceProviderInterface;
 use Slim\Views\TwigExtension;
 use Twig\Extension\DebugExtension;
 use Twig\TwigFilter;
-use Twig\TwigFunction;
 
 class Twig implements ServiceProviderInterface {
 

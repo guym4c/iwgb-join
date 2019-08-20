@@ -27,7 +27,6 @@ class CreateApplication extends GenericAction {
 
         $applicant = new Applicant();
         $this->persist($applicant)->flush();
-        $this->session->set(self::SESSION_AID_KEY, $applicant->getId());
         $this->log->addDebug('Applicant created', ['aid' => $applicant->getId()]);
 
         if (!$jobType->Sort) {

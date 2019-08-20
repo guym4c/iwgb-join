@@ -10,8 +10,6 @@ use Slim\App;
 use Pimple\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Slim\Middleware\Session;
-use SlimSession;
 
 class Slim implements ServiceProviderInterface {
 
@@ -19,10 +17,6 @@ class Slim implements ServiceProviderInterface {
      * {@inheritdoc}
      */
     public function register(Container $c) {
-
-        $c['session'] = function () {
-            return new SlimSession\Helper();
-        };
 
         $c['slim'] = function (Container $c): App {
             /** @var $c TypeHinter */
@@ -44,22 +38,19 @@ class Slim implements ServiceProviderInterface {
                 return $next($request, $response);
             });
 
-            $app->add(new Session([
-                'name' => 'IwgbMemberSessid',
-                'autorefresh' => true,
-                'lifetime' => '1 hour',
-            ]));
-
             $app->get('/join/{slug}', Action\CreateApplication::class);
+
+            $app->group('/applicant/{applicant}', function (App $app) {
+
+                $app->get('/branch', Action\RecallBranch::class);
+                $app->get('/pay', Action\GoCardless\CreateRedirectFlow::class);
+            });
 
             $app->group('/callback', function (App $app) {
 
+                $app->get('/gocardless/confirm', Action\GoCardless\FlowSuccess::class);
                 $app->post('/typeform/sorter', Action\Typeform\Sorter::class);
-                $app->get('/typeform/branch', Action\RecallBranch::class);
-                $app->get('/typeform/pay', Action\GoCardless\CreateRedirectFlow::class);
-
                 $app->post('/gocardless/event', Action\GoCardless\GoCardlessEvent::class);
-                $app->get('/gocardless/success', Action\GoCardless\FlowSuccess::class);
             });
 
             return $app;
