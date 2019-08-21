@@ -13,6 +13,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "guym4c/typeform-api": "@dev",
         "guym4c/airtable-client": "^1.2",
+        "guym4c/action-network-php": "@dev",
         "sentry/sdk": "^2.0",
         "slim/twig-view": "^2.5"
     },

@@ -11,14 +11,14 @@ return [
     'displayErrorDetails'               => true,
     'determineRouteBeforeAppMiddleware' => false,
 
-    'gocardless' => [
+    'gocardless'     => [
         'webhookSecret' => $keys['gocardless']['webhook'],
         'accessToken'   => $keys['gocardless']['accessToken'],
     ],
-    'sentry'     => [
+    'sentry'         => [
         'dsn' => $keys['sentry'],
     ],
-    'doctrine'   => [
+    'doctrine'       => [
         // if true, metadata caching is forcefully disabled
         'dev_mode'      => true,
 
@@ -36,18 +36,21 @@ return [
             'dbname' => '',
         ], $keys['db']),
     ],
-    'typeform'   => [
+    'typeform'       => [
         'webhookSecret'     => $keys['typeform']['webhook'],
         'api'               => $keys['typeform']['api'],
         'core-questions-id' => '',
     ],
-    'airtable'   => [
+    'airtable'       => [
         'key'  => $keys['airtable'],
         'base' => '',
     ],
-    'twig'       => [
+    'twig'           => [
         'templates_dir' => APP_ROOT . '/view/',
         'cache_dir'     => APP_ROOT . '/var/twig',
         'debug'         => true,
+    ],
+    'action-network' => [
+        'token' => $keys['action-network'],
     ],
 ];
