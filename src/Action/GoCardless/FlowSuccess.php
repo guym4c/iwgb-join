@@ -3,15 +3,20 @@
 
 namespace IWGB\Join\Action\GoCardless;
 
+use Exception;
 use GoCardlessPro\Core\Exception\InvalidStateException;
 use GoCardlessPro\Resources\Mandate;
 use GoCardlessPro\Resources\RedirectFlow;
 use GoCardlessPro\Resources\Subscription;
 use Guym4c\Airtable\AirtableApiException;
 use Guym4c\Airtable\Record;
+use IWGB\Join\Config;
 use IWGB\Join\Domain\AirtablePlanRecord;
 use IWGB\Join\Domain\Applicant;
+use IWGB\Join\JsonConfigObject;
+use IWGB\Join\TypeHinter;
 use Psr\Http\Message\ResponseInterface;
+use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Sentry;
@@ -22,6 +27,15 @@ class FlowSuccess extends GenericGoCardlessAction {
     private const AIRTABLE_CONFIRMED_STATUS = 'Member';
     private const BASE_PAYMENT_REFERENCE = 'IWGB';
     private const CONFIRMATION_REDIRECT_URL = 'https://iwgb.org.uk/page/info/confirmation';
+
+    private $http;
+
+    public function __construct(Container $c) {
+        parent::__construct($c);
+
+        /** @var TypeHinter $c */
+        $this->http = $c->http;
+    }
 
     /**
      * {@inheritdoc}
@@ -90,6 +104,9 @@ class FlowSuccess extends GenericGoCardlessAction {
             Sentry\captureException($e);
             return $this->returnError($response, 'Payment processing error');
         }
+
+        // dispatch webhooks
+        $this->dispatchWebhooks($applicant);
 
         return $response->withRedirect(self::CONFIRMATION_REDIRECT_URL);
     }
@@ -161,5 +178,25 @@ class FlowSuccess extends GenericGoCardlessAction {
         ]);
 
         return $subscription;
+    }
+
+    /**
+     * @param Applicant $applicant
+     */
+    private function dispatchWebhooks(Applicant $applicant): void {
+
+        $webhooks = JsonConfigObject::getItems(Config::Webhooks);
+
+        foreach ($webhooks as $webhook) {
+            $this->http->postAsync($webhook['uri'], [
+                'json' => [
+                    'applicant' => $applicant->getId(),
+                    'record'    => $applicant->getAirtableId(),
+                ],
+                'query' => [
+                    'token' => $webhook['token'],
+                ],
+            ]);
+        }
     }
 }

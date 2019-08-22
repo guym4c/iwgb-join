@@ -4,6 +4,7 @@ namespace IWGB\Join;
 
 use Doctrine\ORM\EntityManager;
 use Guym4c\Airtable\Airtable;
+use GuzzleHttp\Client;
 use Monolog\Logger;
 use Slim\Views\Twig;
 
@@ -23,5 +24,8 @@ class TypeHinter {
 
     /** @var Twig */
     public $view;
+
+    /** @var Client */
+    public $http;
 
 }
