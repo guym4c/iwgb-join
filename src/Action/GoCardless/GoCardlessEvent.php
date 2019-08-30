@@ -39,8 +39,8 @@ class GoCardlessEvent extends GenericGoCardlessAction {
             switch ($event->action) {
                 case 'failed':
 
-                    $memberId = $this->getMemberFromPayment($this->gocardless->payments()
-                        ->get($event->links->payment))->getId();
+                    $memberId = $this->getMemberFromMandate($this->gocardless->mandates()
+                        ->get($event->links->mandate))->getId();
 
                     $this->log->addDebug('Adding missed payment to Airtable', [
                         'event'  => $event->id,
@@ -56,8 +56,8 @@ class GoCardlessEvent extends GenericGoCardlessAction {
                     break;
 
                 case 'cancelled':
-                    $member = $this->getMemberFromPayment($this->gocardless->payments()
-                        ->get($event->links->payment));
+                    $member = $this->getMemberFromMandate($this->gocardless->mandates()
+                        ->get($event->links->mandate));
 
                     $this->log->debug('Marking member status cancelled', [
                         'event'  => $event->id,
@@ -73,13 +73,12 @@ class GoCardlessEvent extends GenericGoCardlessAction {
     }
 
     /**
-     * @param GoCardless\Resources\Payment $payment
+     * @param GoCardless\Resources\Mandate $mandate
      * @return Record
      * @throws AirtableApiException
      */
-    private function getMemberFromPayment(GoCardless\Resources\Payment $payment): Record {
-        return $this->airtable->search('Members', 'Customer ID',
-            $this->gocardless->mandates()->get($payment->links->mandate)->links->customer)
+    private function getMemberFromMandate(GoCardless\Resources\Mandate $mandate): Record {
+        return $this->airtable->search('Members', 'Customer ID', $mandate->links->customer)
                    ->getRecords()[0];
     }
 }
