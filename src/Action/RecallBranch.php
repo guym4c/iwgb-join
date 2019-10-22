@@ -16,7 +16,7 @@ class RecallBranch extends GenericAction {
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
-        $applicant = $this->getApplicant($args);
+        $applicant = $this->getApplicant();
 
         if (empty($applicant)) {
             return $this->returnError($response, 'Invalid session');

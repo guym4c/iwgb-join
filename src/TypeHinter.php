@@ -7,6 +7,7 @@ use Guym4c\Airtable\Airtable;
 use GuzzleHttp\Client;
 use Monolog\Logger;
 use Slim\Views\Twig;
+use SlimSession\Helper;
 
 class TypeHinter {
 
@@ -27,5 +28,8 @@ class TypeHinter {
 
     /** @var Client */
     public $http;
+
+    /** @var Helper */
+    public $session;
 
 }

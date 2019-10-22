@@ -99,7 +99,6 @@ class FlowSuccess extends GenericGoCardlessAction {
         try {
             $this->createSubscription($applicant, $plan, $branch,
                 $this->gocardless->mandates()->get($flow->links->mandate));
-
         } catch (InvalidStateException $e) {
             Sentry\captureException($e);
             return $this->returnError($response, 'Payment processing error');
@@ -107,6 +106,8 @@ class FlowSuccess extends GenericGoCardlessAction {
 
         // dispatch webhooks
         $this->dispatchWebhooks($applicant);
+
+        $this->session->clear();
 
         return $response->withRedirect(self::CONFIRMATION_REDIRECT_URL);
     }

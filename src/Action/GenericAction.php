@@ -23,6 +23,8 @@ abstract class GenericAction {
 
     protected $airtable;
 
+    protected $session;
+
     const ERROR_RETURN_URL = 'https://iwgb.org.uk/auth/login';
     const INVALID_INPUT_RETURN_URL = 'https://iwgb.org.uk/join';
     const TYPEFORM_FORM_BASE_URL = 'https://iwgb.typeform.com/to';
@@ -35,6 +37,7 @@ abstract class GenericAction {
         $this->settings = $c->settings;
         $this->em = $c->em;
         $this->airtable = $c->airtable;
+        $this->session = $c->session;
     }
 
     /**
@@ -65,14 +68,19 @@ abstract class GenericAction {
             self::TYPEFORM_FORM_BASE_URL));
     }
 
-    protected function getApplicant(array $args): ?Applicant {
+    protected function getApplicant(): ?Applicant {
+
+        if ($this->session->exists(self::SESSION_AID_KEY)) {
+            $this->log->addNotice('No session found');
+            return null;
+        }
 
         /** @var Applicant $applicant */
         $applicant = $this->em->getRepository(Applicant::class)
-            ->find($args['applicant']);
+            ->find($this->session->get(self::SESSION_AID_KEY));
 
         if (empty($applicant)) {
-            $this->log->addNotice("Applicant {$args['applicant']} not found");
+            $this->log->addNotice("Applicant {$this->session->get(self::SESSION_AID_KEY)} not found");
             return null;
         }
 
