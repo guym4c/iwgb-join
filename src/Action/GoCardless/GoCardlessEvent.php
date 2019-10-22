@@ -44,8 +44,12 @@ class GoCardlessEvent extends GenericGoCardlessAction {
 
                         case 'cancelled':
 
-                            $member = $this->getMemberFromMandate($this->gocardless->mandates()
-                                ->get($event->links->mandate));
+                            $member = $this->getMemberFromSubscription($this->gocardless->subscriptions()
+                                ->get($event->links->subscription));
+
+                            if (empty($member)) {
+                                break;
+                            }
 
                             $this->log->debug('Marking member status cancelled', [
                                 'event'  => $event->id,
@@ -64,20 +68,23 @@ class GoCardlessEvent extends GenericGoCardlessAction {
 
                         case 'failed':
 
-                            $memberId = $this->getMemberFromPayment($this->gocardless->payments()
-                                ->get($event->links->payment))
-                                ->getId();
+                            $member = $this->getMemberFromPayment($this->gocardless->payments()
+                                ->get($event->links->payment));
+
+                            if (empty($member)) {
+                                break;
+                            }
 
                             $this->log->addDebug('Adding missed payment to Airtable', [
                                 'event'  => $event->id,
-                                'member' => $memberId,
+                                'member' => $member->getId(),
                             ]);
 
                             $this->airtable->create('Missed Payments', [
                                 'GoCardless ID' => $event->id,
                                 'Reason'        => $event->details->cause,
                                 'Reason detail' => $event->details->description,
-                                'Member'        => [$memberId],
+                                'Member'        => [$member->getId()],
                             ]);
 
                             break;
@@ -92,40 +99,40 @@ class GoCardlessEvent extends GenericGoCardlessAction {
 
     /**
      * @param GoCardless\Resources\Mandate $mandate
-     * @return Record
+     * @return Record|null
      * @throws AirtableApiException
      */
-    private function getMemberFromMandate(GoCardless\Resources\Mandate $mandate): Record {
+    private function getMemberFromMandate(GoCardless\Resources\Mandate $mandate): ?Record {
         return $this->getMemberFromCustomerID($mandate->links->customer);
     }
 
     /**
      * @param GoCardless\Resources\Payment $payment
-     * @return Record
+     * @return Record|null
      * @throws AirtableApiException
      */
-    private function getMemberFromPayment(GoCardless\Resources\Payment $payment): Record {
+    private function getMemberFromPayment(GoCardless\Resources\Payment $payment): ?Record {
         return $this->getMemberFromCustomerID($this->gocardless->mandates()->get($payment->links->mandate)
             ->links->customer);
     }
 
     /**
      * @param GoCardless\Resources\Subscription $subscription
-     * @return Record
+     * @return Record|null
      * @throws AirtableApiException
      */
-    private function getMemberFromSubscription(GoCardless\Resources\Subscription $subscription): Record {
+    private function getMemberFromSubscription(GoCardless\Resources\Subscription $subscription): ?Record {
         return $this->getMemberFromCustomerID($this->gocardless->mandates()->get($subscription->links->mandate)
             ->links->customer);
     }
 
     /**
      * @param string $customerId
-     * @return Record
+     * @return Record|null
      * @throws AirtableApiException
      */
-    private function getMemberFromCustomerID(string $customerId): Record {
+    private function getMemberFromCustomerID(string $customerId): ?Record {
         return $this->airtable->search('Members', 'Customer ID', $customerId)
-            ->getRecords()[0];
+            ->getRecords()[0] ?? null;
     }
 }
