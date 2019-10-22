@@ -3,7 +3,6 @@
 
 namespace IWGB\Join\Action\GoCardless;
 
-use Exception;
 use GoCardlessPro\Core\Exception\InvalidStateException;
 use GoCardlessPro\Resources\Mandate;
 use GoCardlessPro\Resources\RedirectFlow;
@@ -20,6 +19,7 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Sentry;
+use GuzzleHttp\Promise;
 
 class FlowSuccess extends GenericGoCardlessAction {
 
@@ -188,8 +188,10 @@ class FlowSuccess extends GenericGoCardlessAction {
 
         $webhooks = JsonConfigObject::getItems(Config::Webhooks);
 
+        $requests = [];
         foreach ($webhooks as $webhook) {
-            $this->http->postAsync($webhook['uri'], [
+
+            $requests[] = $this->http->postAsync($webhook['uri'], [
                 'json' => [
                     'applicant' => $applicant->getId(),
                     'record'    => $applicant->getAirtableId(),
@@ -199,5 +201,7 @@ class FlowSuccess extends GenericGoCardlessAction {
                 ],
             ]);
         }
+
+        Promise\settle($requests)->wait();
     }
 }
