@@ -52,8 +52,10 @@ class Slim implements ServiceProviderInterface {
 
             $app->group('/join', function (App $app) {
 
+                $app->get('/data', Action\Typeform\RedirectToDataForm::class);
                 $app->get('/branch', Action\RecallBranch::class);
                 $app->get('/pay', Action\GoCardless\CreateRedirectFlow::class);
+                $app->get('/applicant/{applicant}', Action\RecallApplication::class);
                 $app->get('/{slug}', Action\CreateApplication::class);
             });
 

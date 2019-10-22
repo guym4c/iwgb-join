@@ -3,6 +3,8 @@
 
 namespace IWGB\Join\Action;
 
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Guym4c\Airtable\AirtableApiException;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
@@ -13,6 +15,8 @@ class RecallBranch extends GenericAction {
     /**
      * {@inheritdoc}
      * @throws AirtableApiException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
@@ -21,6 +25,9 @@ class RecallBranch extends GenericAction {
         if (empty($applicant)) {
             return $this->returnError($response, 'Invalid session');
         }
+
+        $applicant->setCoreDataComplete(true);
+        $this->em->flush();
 
         $branch = $this->airtable->get('Branches', $applicant->getBranch());
         $plan = $this->airtable->get('Plans', $applicant->getPlan());

@@ -30,6 +30,7 @@ class CreateRedirectFlow extends GenericGoCardlessAction {
             return $this->returnError($response, 'Invalid session');
         }
 
+        $applicant->setBranchDataComplete(true);
         $record = $applicant->fetchRecord($this->airtable);
         $this->em->flush();
 

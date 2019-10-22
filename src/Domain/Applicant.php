@@ -61,6 +61,20 @@ class Applicant {
     protected $timestamp;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    protected $coreDataComplete = false;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    protected $branchDataComplete = false;
+
+    /**
      * Applicant constructor.
      * @throws Exception
      */
@@ -130,6 +144,34 @@ class Applicant {
      */
     public function setAirtableId($airtableId): void {
         $this->airtableId = $airtableId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCoreDataComplete(): bool {
+        return $this->coreDataComplete;
+    }
+
+    /**
+     * @param bool $coreDataComplete
+     */
+    public function setCoreDataComplete(bool $coreDataComplete): void {
+        $this->coreDataComplete = $coreDataComplete;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBranchDataComplete(): bool {
+        return $this->branchDataComplete;
+    }
+
+    /**
+     * @param bool $branchDataComplete
+     */
+    public function setBranchDataComplete(bool $branchDataComplete): void {
+        $this->branchDataComplete = $branchDataComplete;
     }
 
     /**
