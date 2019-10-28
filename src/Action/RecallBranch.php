@@ -37,6 +37,10 @@ class RecallBranch extends GenericAction {
             'branch' => $branch->Name,
         ]);
 
+        if (empty($branch->{'Typeform ID'})) {
+            return $response->withRedirect('/join/pay');
+        }
+
         return self::redirectToTypeform($branch->{'Typeform ID'}, $applicant, $response, [
             'amount' => $plan->Amount,
         ]);
