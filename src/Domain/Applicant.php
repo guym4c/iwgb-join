@@ -1,6 +1,5 @@
 <?php
 
-
 namespace IWGB\Join\Domain;
 
 use DateTime;

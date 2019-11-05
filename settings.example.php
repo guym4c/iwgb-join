@@ -50,4 +50,7 @@ return [
         'cache_dir'     => APP_ROOT . '/var/twig',
         'debug'         => true,
     ],
+    'api'            => [
+        'token' => $keys['api'],
+    ],
 ];

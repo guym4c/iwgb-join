@@ -12,6 +12,7 @@ use Guym4c\TypeformAPI\Model\Webhook\FormResponse;
 use Guym4c\TypeformAPI\Typeform;
 use IWGB\Join\Config;
 use IWGB\Join\Domain\Applicant;
+use IWGB\Join\Domain\SorterResult;
 use IWGB\Join\JsonConfigObject;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Container;
@@ -93,8 +94,8 @@ class Sorter extends GenericTypeformAction {
             return false;
         }
 
-        $applicant->setPlan($sortingResult['plan-id']);
-        $plan = $this->airtable->get('Plans', $sortingResult['plan-id']);
+        $applicant->setPlan($sortingResult->getPlan());
+        $plan = $sortingResult->fetchPlan($this->airtable);
         $applicant->setBranch($plan->Branch->load('Branches')->getId());
         $this->em->flush();
 
@@ -106,27 +107,30 @@ class Sorter extends GenericTypeformAction {
         return true;
     }
 
-    private function findResultByQuestion(Answer $answer): array {
+    private function findResultByQuestion(Answer $answer): ?SorterResult {
 
-        foreach ($this->results as $result) {
+        foreach ($this->em->getRepository(SorterResult::class)
+                 ->findAll() as $result) {
 
-            $condition = $result['condition'];
-            if (in_array($condition, ['true', 'false'])) {
-                $condition = $condition == 'true'
+            /** @var SorterResult $result */
+
+            $conditional = $result->getConditional();
+            if (in_array($conditional, ['true', 'false'])) {
+                $conditional = $conditional == 'true'
                     ? true
                     : false;
             } else {
-                $condition = strval($condition);
+                $conditional = strval($conditional);
             }
 
-            if ($result['question-id'] == $answer->field->id &&
-                ($condition == $answer->answer ||
-                    $condition == $answer->answer['label'] ?? null)) {
+            if ($result->getQuestion() == $answer->field->id &&
+                ($conditional == $answer->answer ||
+                    $conditional == $answer->answer['label'] ?? null)) {
                 return $result;
             }
         }
 
-        return [];
+        return null;
     }
 
 }

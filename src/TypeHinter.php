@@ -3,6 +3,7 @@
 namespace IWGB\Join;
 
 use Doctrine\ORM\EntityManager;
+use GraphQL\Doctrine\Helper\EntitySchemaBuilder;
 use Guym4c\Airtable\Airtable;
 use GuzzleHttp\Client;
 use Monolog\Logger;
@@ -31,5 +32,8 @@ class TypeHinter {
 
     /** @var Helper */
     public $session;
+
+    /** @var EntitySchemaBuilder */
+    public $graphql;
 
 }

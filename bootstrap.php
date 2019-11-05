@@ -18,6 +18,7 @@ $c->register(new Provider\Doctrine())
     ->register(new Provider\Twig())
     ->register(new Provider\HttpClient())
     ->register(new Provider\LogProvider())
-    ->register(new Provider\AirtableProvider());
+    ->register(new Provider\AirtableProvider())
+    ->register(new Provider\GraphQLProvider());
 
 return $c;

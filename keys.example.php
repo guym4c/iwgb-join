@@ -1,19 +1,20 @@
 <?php
 
 return [
-    'gocardless' => [
+    'gocardless'     => [
         'webhook'     => '', // gocardless event webhook secret
         'accessToken' => '',
     ],
-    'sentry'     => '', // sentry URL
-    'db'         => [
+    'sentry'         => '', // sentry URL
+    'db'             => [
         'user'     => '', // db credentials
         'password' => '',
     ],
-    'typeform'   => [
+    'typeform'       => [
         'webhook' => '',
         'api'     => '',
     ],
-    'airtable'   => '',
+    'airtable'       => '',
     'action-network' => '',
+    'api'            => '',
 ];

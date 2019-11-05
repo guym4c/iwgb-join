@@ -70,7 +70,7 @@ abstract class GenericAction {
 
     protected function getApplicant(): ?Applicant {
 
-        if ($this->session->exists(self::SESSION_AID_KEY)) {
+        if (!$this->session->exists(self::SESSION_AID_KEY)) {
             $this->log->addNotice('No session found');
             return null;
         }

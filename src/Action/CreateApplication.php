@@ -42,7 +42,7 @@ class CreateApplication extends GenericAction {
                 'aid'  => $applicant->getId(),
             ]);
 
-            return self::redirectToTypeform($this->settings['typeform']['core-questions-id'], $applicant, $response);
+            return $response->withRedirect('/join/data');
         }
 
         return self::redirectToTypeform($jobType->{'Typeform ID'}, $applicant, $response);

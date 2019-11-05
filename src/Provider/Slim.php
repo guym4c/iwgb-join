@@ -2,7 +2,6 @@
 
 namespace IWGB\Join\Provider;
 
-
 use IWGB\Join\Action;
 use IWGB\Join\TypeHinter;
 use Pimple\Container;
@@ -12,6 +11,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Middleware\Session;
 use SlimSession;
+use Tuupola\Middleware\HttpBasicAuthentication;
 
 class Slim implements ServiceProviderInterface {
 
@@ -57,6 +57,8 @@ class Slim implements ServiceProviderInterface {
                 $app->get('/pay', Action\GoCardless\CreateRedirectFlow::class);
                 $app->get('/applicant/{applicant}', Action\RecallApplication::class);
                 $app->get('/{slug}', Action\CreateApplication::class);
+
+                $app->get('/debug/session', Action\SessionDebug::class);
             });
 
             $app->group('/callback', function (App $app) {
@@ -65,6 +67,24 @@ class Slim implements ServiceProviderInterface {
                 $app->post('/typeform/sorter', Action\Typeform\Sorter::class);
                 $app->post('/gocardless/event', Action\GoCardless\GoCardlessEvent::class);
             });
+
+            $app->group('/api', function (App $app) {
+
+                $app->group('/onboarding', function (App $app) {
+
+                    $app->post('/graphql', Action\Api\Onboarding\GraphQLHandler::class);
+
+                    $app->group('/rest', function (App $app) {
+
+                        $app->get('/jobtypes[/{id}]', Action\Api\Onboarding\JobTypeProxy::class);
+                    });
+                });
+
+            })->add(new HttpBasicAuthentication([
+                'users' => [
+                    'api' => $c->settings['api']['token'],
+                ]
+            ]));
 
             return $app;
         };
