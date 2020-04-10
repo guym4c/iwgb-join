@@ -30,8 +30,7 @@ $RECYCLE.BIN/
 /temp/
 
 keys.php
-settings.php
-!*.example.php
+*.crt
 
 # Composer
 composer.phar

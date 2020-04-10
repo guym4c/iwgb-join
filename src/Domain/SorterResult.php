@@ -1,9 +1,10 @@
 <?php
 
-namespace IWGB\Join\Domain;
+namespace Iwgb\Join\Domain;
 
 use Doctrine\ORM\Mapping as ORM;
 use GraphQL\Doctrine\Annotation as API;
+use GraphQL\Doctrine\Helper\GraphQLEntity;
 use Guym4c\Airtable\Airtable;
 use Guym4c\Airtable\AirtableApiException;
 use Guym4c\Airtable\Record;
@@ -11,88 +12,79 @@ use Guym4c\Airtable\Record;
 /**
  * @ORM\Entity
  */
-class SorterResult {
+class SorterResult extends GraphQLEntity {
 
     /**
-     * @var string
-     *
-     * @ORM\Column
+     * @ORM\Column(name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="\IWGB\Join\Domain\UuidGenerator")
+     * @ORM\CustomIdGenerator(class="\Iwgb\Join\Domain\UuidGenerator")
      */
-    protected $id;
+    protected string $identifier;
 
     /**
-     * @var string
-     *
      * @ORM\Column
      */
-    protected $description;
+    protected string $friendlyName;
 
     /**
-     * @var string
-     *
      * @ORM\Column
      */
-    protected $form;
+    protected string $form;
 
     /**
-     * @var string
-     *
      * @ORM\Column
      */
-    protected $question;
+    protected string $question;
 
     /**
-     * @var string
-     *
      * @ORM\Column
      */
-    protected $conditional;
+    protected string $conditional;
 
     /**
-     * @var string
-     *
      * @ORM\Column
      */
-    protected $plan;
+    protected string $plan;
 
     /**
      * SorterResult constructor.
-     * @param string $description
+     * @param string $friendlyName
      * @param string $form
      * @param string $question
      * @param string $conditional
      * @param string $plan
+     * @return SorterResult
      */
-    public function __construct(string $description, string $form, string $question, string $conditional, string $plan) {
-        $this->description = $description;
-        $this->form = $form;
-        $this->question = $question;
-        $this->conditional = $conditional;
-        $this->plan = $plan;
+    public static function construct(string $friendlyName, string $form, string $question, string $conditional, string $plan): self {
+        $sorterResult = new self();
+        $sorterResult->friendlyName = $friendlyName;
+        $sorterResult->form = $form;
+        $sorterResult->question = $question;
+        $sorterResult->conditional = $conditional;
+        $sorterResult->plan = $plan;
+        return $sorterResult;
     }
 
     /**
      * @return string
      */
-    public function getId(): string {
-        return $this->id;
+    public function getIdentifier(): string {
+        return $this->identifier;
     }
 
     /**
      * @return string
      */
-    public function getDescription(): string {
-        return $this->description;
+    public function getFriendlyName(): string {
+        return $this->friendlyName;
     }
 
     /**
-     * @param string $description
+     * @param string $friendlyName
      */
-    public function setDescription(string $description): void {
-        $this->description = $description;
+    public function setFriendlyName(string $friendlyName): void {
+        $this->friendlyName = $friendlyName;
     }
 
     /**

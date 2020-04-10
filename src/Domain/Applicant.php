@@ -1,8 +1,10 @@
 <?php
 
-namespace IWGB\Join\Domain;
+namespace Iwgb\Join\Domain;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Guym4c\Airtable\Airtable;
@@ -16,62 +18,52 @@ use Ramsey\Uuid\Uuid;
 class Applicant {
 
     /**
-     * @var string
-     *
      * @ORM\Column
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="\IWGB\Join\Domain\UuidGenerator")
+     * @ORM\CustomIdGenerator(class="\Iwgb\Join\Domain\UuidGenerator")
      */
-    protected $id;
+    protected string $id;
 
-    /** @var string
-     *
+    /**
      * @ORM\Column
      */
-    protected $session;
+    protected string $session;
 
     /**
-     * @var ?string
-     *
      * @ORM\Column(nullable = true)
      */
-    protected $branch;
+    protected ?string $branch;
 
     /**
-     * @var ?string
-     *
      * @ORM\Column(nullable = true)
      */
-    protected $plan;
+    protected ?string $plan;
 
     /**
-     * @var ?string
-     *
      * @ORM\Column(nullable = true)
      */
-    protected $airtableId;
+    protected ?string $airtableId;
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(type="datetime")
      */
-    protected $timestamp;
+    protected DateTIme $timestamp;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(type="boolean")
      */
-    protected $coreDataComplete = false;
+    protected bool $coreDataComplete = false;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(type="boolean")
      */
-    protected $branchDataComplete = false;
+    protected bool $branchDataComplete = false;
+
+    /**
+     * @ORM\OneToMany(targetEntity="\Iwgb\Join\Domain\Event", mappedBy="applicant")
+     */
+    protected Collection $events;
 
     /**
      * Applicant constructor.
@@ -80,6 +72,7 @@ class Applicant {
     public function __construct() {
         $this->session = Uuid::uuid4();
         $this->timestamp = new DateTime();
+        $this->events = new ArrayCollection();
     }
 
     /**
@@ -174,17 +167,29 @@ class Applicant {
     }
 
     /**
+     * @return array
+     */
+    public function getEvents() {
+        return $this->events->toArray();
+    }
+
+    /**
      * @param Airtable $airtable
      * @return Record
      * @throws AirtableApiException
      */
-    public function fetchRecord(Airtable $airtable): Record {
+    public function fetchRecord(Airtable $airtable): ?Record {
 
         if (!empty($this->airtableId)) {
             return $airtable->get('Members', $this->airtableId);
         } else {
             $record = $airtable->search('Members', 'Applicant ID', $this->id)
                           ->getRecords()[0];
+
+            if (empty($record)) {
+                return null;
+            }
+
             $this->airtableId = $record->getId();
             return $record;
         }
