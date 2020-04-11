@@ -30,12 +30,10 @@ $RECYCLE.BIN/
 /temp/
 
 keys.php
-settings.php
-!*.example.php
+*.crt
 
 # Composer
 composer.phar
-composer.lock
 /vendor/
 
 # app caches

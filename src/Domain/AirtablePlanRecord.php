@@ -1,29 +1,24 @@
 <?php
 
-namespace IWGB\Join\Domain;
+namespace Iwgb\Join\Domain;
 
 use Guym4c\Airtable\Loader;
 use Guym4c\Airtable\Record;
 
 class AirtablePlanRecord {
 
-    /** @var string */
-    private $branch;
 
-    /** @var string */
-    private $plan;
+    private string $branch;
 
-    /** @var int */
-    private $amount;
+    private string $plan;
 
-    /** @var int */
-    private $interval;
+    private int $amount;
 
-    /** @var string */
-    private $intervalUnit;
+    private int $interval;
 
-    /** @var int */
-    private $dayOfMonth;
+    private string $intervalUnit;
+
+    private int $dayOfMonth;
 
     public function __construct(Record $record) {
         foreach (get_object_vars($this) as $property => $value) {

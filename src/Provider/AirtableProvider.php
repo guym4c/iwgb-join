@@ -1,10 +1,10 @@
 <?php
 
-namespace IWGB\Join\Provider;
+namespace Iwgb\Join\Provider;
 
 use Doctrine\Common\Cache\FilesystemCache;
 use Guym4c\Airtable\Airtable;
-use IWGB\Join\TypeHinter;
+
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -14,13 +14,13 @@ class AirtableProvider implements ServiceProviderInterface {
      * {@inheritdoc}
      */
     public function register(Container $c) {
-
-        $c['airtable'] = function (Container $c): Airtable {
-
-            /** @var $c TypeHinter */
-            return new Airtable($c->settings['airtable']['key'], $c->settings['airtable']['base'],
+        $c['airtable'] = fn (): Airtable =>
+            new Airtable($c['settings']['airtable']['key'], $c['settings']['airtable']['base'],
                 new FilesystemCache(APP_ROOT . '/var/cache/airtable'),
-                ['Branches', 'Plans', 'Job types']);
-        };
+                ['Branches', 'Plans', 'Job types'],
+                'https://airtable.iwgb.org.uk/v0',
+                ['X-Proxy-Auth' => $c['settings']['airtable']['proxyKey']],
+                false
+            );
     }
 }

@@ -1,25 +1,24 @@
 {
     "require": {
-        "doctrine/orm": "^2.6",
+        "doctrine/orm": "^2.6.4",
         "slim/slim": "^3.9",
         "ext-pdo": "*",
         "ext-json": "*",
-        "myclabs/php-enum": "^1.6",
-        "nyholm/psr7": "^1.0",
         "gocardless/gocardless-pro": "^3.0",
         "monolog/monolog": "^1.24",
-        "ramsey/uuid": "^3.8",
-        "moontoast/math": "^1.1",
+        "ramsey/uuid": "^4.0.1",
         "guzzlehttp/guzzle": "^6.3",
         "guym4c/typeform-api": "@dev",
-        "guym4c/airtable-client": "^1.2",
-        "guym4c/action-network-php": "@dev",
+        "guym4c/airtable-client": "^2.4.1",
         "sentry/sdk": "^2.0",
-        "slim/twig-view": "^2.5"
+        "guym4c/doctrine-graphql-helper": "^1.0",
+        "tuupola/slim-basic-auth": "^3.2",
+        "aura/session": "^2.1",
+        "myclabs/php-enum": "^1.7.6"
     },
     "autoload": {
         "psr-4": {
-            "IWGB\\Join\\": "src/"
+            "Iwgb\\Join\\": "src/"
         }
     }
 }
