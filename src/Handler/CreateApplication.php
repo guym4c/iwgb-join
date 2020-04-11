@@ -73,9 +73,7 @@ class CreateApplication extends AbstractSessionValidationHandler {
 
             $this->em->flush();
 
-            return $response->withRedirect(
-                $this->router->relativePathFor(Route::CORE_DATA)
-            );
+            return $this->redirectToRoute($response, Route::CORE_DATA);
         }
 
         $this->em->flush();

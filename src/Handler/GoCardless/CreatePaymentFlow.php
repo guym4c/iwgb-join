@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class CreateRedirectFlow extends GenericGoCardlessAction {
+class CreatePaymentFlow extends GenericGoCardlessAction {
 
     /**
      * {@inheritdoc}
@@ -25,7 +25,6 @@ class CreateRedirectFlow extends GenericGoCardlessAction {
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
         $applicant = $this->getApplicant($request);
-
         $applicant->setBranchDataComplete(true);
         $record = $applicant->fetchRecord($this->airtable);
         $this->em->flush();

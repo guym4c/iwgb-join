@@ -19,12 +19,12 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Sentry;
 
-class FlowSuccess extends GenericGoCardlessAction {
+class CompletePayment extends GenericGoCardlessAction {
 
     private const FLOW_ID_PARAM_KEY = 'redirect_flow_id';
     private const AIRTABLE_CONFIRMED_STATUS = 'Member';
     private const BASE_PAYMENT_REFERENCE = 'Iwgb';
-    private const CONFIRMATION_REDIRECT_URL = 'https://iwgb.org.uk/page/confirmation';
+    public const CONFIRMATION_REDIRECT_URL = 'https://iwgb.org.uk/page/confirmation';
 
     /**
      * {@inheritDoc}
@@ -106,6 +106,9 @@ class FlowSuccess extends GenericGoCardlessAction {
         }
 
         $this->sm->destroy();
+
+        $applicant->setPaymentComplete(true);
+        $this->em->flush();
 
         return $response->withRedirect(self::CONFIRMATION_REDIRECT_URL);
     }

@@ -25,5 +25,4 @@ abstract class AbstractSessionValidationHandler extends RootHandler {
     public function validate(): bool {
         return $this->session->getFlash(self::KEY) === self::VALUE;
     }
-
 }

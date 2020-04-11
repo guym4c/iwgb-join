@@ -21,10 +21,6 @@ class RedirectToDataForm extends RootHandler {
 
         $applicant = $this->getApplicant($request);
 
-        if (empty($applicant)) {
-            return ApplicantSession::sessionInvalid($response, $this->sm);
-        }
-
         $this->log->addInfo(Event::REDIRECT_TO_DATA);
         $this->em->flush();
 

@@ -93,4 +93,10 @@ abstract class RootHandler {
             'e' => $error,
         ]));
     }
+
+    protected function redirectToRoute(Response $response, string $route): ResponseInterface {
+        return $response->withRedirect(
+            $this->router->relativePathFor($route)
+        );
+    }
 }

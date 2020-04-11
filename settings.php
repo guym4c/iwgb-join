@@ -26,7 +26,7 @@ return ['settings' => [
 
         'connection' => array_merge([
             'driver'        => 'pdo_mysql',
-            'host'          => 'iwgb-do-user-4811132-0.a.db.ondigitalocean.com',
+            'host'          => 'db.iwgb.org.uk',
             'port'          => 25060,
             'dbname'        => "iwgb-members{$dbSuffix}",
             'charset'       => 'utf8mb4',

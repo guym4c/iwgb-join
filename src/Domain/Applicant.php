@@ -51,14 +51,19 @@ class Applicant {
     protected DateTIme $timestamp;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column
      */
     protected bool $coreDataComplete = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column
      */
     protected bool $branchDataComplete = false;
+
+    /**
+     * @ORM\Column
+     */
+    protected bool $paymentComplete = false;
 
     /**
      * @ORM\OneToMany(targetEntity="\Iwgb\Join\Domain\Event", mappedBy="applicant")
@@ -164,6 +169,20 @@ class Applicant {
      */
     public function setBranchDataComplete(bool $branchDataComplete): void {
         $this->branchDataComplete = $branchDataComplete;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPaymentComplete(): bool {
+        return $this->paymentComplete;
+    }
+
+    /**
+     * @param bool $paymentComplete
+     */
+    public function setPaymentComplete(bool $paymentComplete): void {
+        $this->paymentComplete = $paymentComplete;
     }
 
     /**

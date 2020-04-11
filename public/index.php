@@ -22,13 +22,23 @@ $app->group('/join', function (App $app) use ($c) {
 
         $app->get('/data', Handler\Typeform\RedirectToDataForm::class)
             ->setName(Route::CORE_DATA);
-        $app->get('/branch', Handler\RecallBranch::class);
-        $app->get('/pay', Handler\GoCardless\CreateRedirectFlow::class)
-            ->setName(Route::INIT_PAYMENT);
-        $app->get('/confirm', Handler\GoCardless\FlowSuccess::class)
+
+        $app->get('/branch', Handler\RecallBranch::class)
+            ->setName(Route::BRANCH_DATA);
+
+        $app->get('/pay', Handler\GoCardless\CreatePaymentFlow::class)
+            ->setName(Route::CREATE_PAYMENT);
+
+        $app->get('/confirm', Handler\GoCardless\CompletePayment::class)
             ->setName(Route::COMPLETE_PAYMENT);
 
     })->add(new Middleware\ApplicantSession($c));
+
+    $app->get('/recall/applicant', Handler\RecallSession::class)
+        ->setName(Route::RECALL_SESSION);
+
+    $app->get('/recall/{aid}', Handler\RecallApplication::class)
+        ->setName(Route::RECALL_APPLICATION);
 
     $app->get('/session', Handler\CreateApplication::class)
         ->setName(Route::CREATE_APPLICATION);

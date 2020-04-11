@@ -24,11 +24,6 @@ class RecallBranch extends RootHandler {
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
         $applicant = $this->getApplicant($request);
-
-        if (empty($applicant)) {
-            return ApplicantSession::sessionInvalid($response, $this->sm);
-        }
-
         $applicant->setCoreDataComplete(true);
 
         $branch = $this->airtable->get('Branches', $applicant->getBranch());
@@ -43,9 +38,7 @@ class RecallBranch extends RootHandler {
         $this->em->flush();
 
         if (empty($branch->{'Typeform ID'})) {
-            return $response->withRedirect(
-                $this->router->relativePathFor(Route::INIT_PAYMENT)
-            );
+            return $this->redirectToRoute($response, Route::CREATE_PAYMENT);
         }
 
         return self::redirectToTypeform($branch->{'Typeform ID'}, $request, $response, [

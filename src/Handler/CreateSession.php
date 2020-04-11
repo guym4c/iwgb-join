@@ -13,11 +13,12 @@ class CreateSession extends AbstractSessionValidationHandler {
      * @inheritDoc
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
+
+        $this->sm->clear();
+
         $this->init();
         $this->getSession()->set('jobType', $args['slug']);
 
-        return $response->withRedirect(
-            $this->router->relativePathFor(Route::CREATE_APPLICATION)
-        );
+        return $this->redirectToRoute($response, Route::CREATE_APPLICATION);
     }
 }
