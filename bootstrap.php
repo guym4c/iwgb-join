@@ -9,7 +9,7 @@ require APP_ROOT . '/vendor/autoload.php';
 
 $c = new Container(require __DIR__ . '/settings.php');
 
-if (!$c['settings']['isDev']) {
+if (!in_array($c['settings']['env'], ['dev', 'qa'])) {
     Sentry\init(['dsn' => $c['settings']['sentry']['dsn']]);
 }
 

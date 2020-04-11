@@ -5,10 +5,12 @@ $keys = require_once APP_ROOT . '/keys.php';
 $env = 'dev'; // empty in production
 
 $isDev = $env === 'dev';
+
 $dbSuffix = empty($env) ? '' : "-{$env}";
 
 return ['settings' => [
 
+    'env'                               => $env,
     'isDev'                             => $isDev,
     'displayErrorDetails'               => true,
     'determineRouteBeforeAppMiddleware' => false,
