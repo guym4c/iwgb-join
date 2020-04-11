@@ -2,6 +2,7 @@
 
 namespace Iwgb\Join\Handler;
 
+use Iwgb\Join\Handler\Api\Error\Error;
 use Iwgb\Join\Middleware\ApplicantSession;
 use Iwgb\Join\Route;
 use Psr\Http\Message\ResponseInterface;
@@ -17,7 +18,9 @@ class RecallApplication extends AbstractSessionValidationHandler {
 
         $aid = $args['aid'] ?? null;
         if (empty($aid)) {
-            return ApplicantSession::sessionInvalid($response, $this->sm);
+            return $this->errorRedirect($request, $response,
+                Error::RECALLED_APPLICANT_INVALID()
+            );
         }
 
         $this->init();

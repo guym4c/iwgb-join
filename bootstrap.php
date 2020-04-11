@@ -14,8 +14,9 @@ if (!$c['settings']['isDev']) {
 }
 
 $c->register(new Provider\DoctrineOrmProvider())
-    ->register(new Provider\GuzzleHttpProvider())
     ->register(new Provider\LogProvider())
+    ->register(new Provider\ErrorHandlerProvider())
+    ->register(new Provider\GuzzleHttpProvider())
     ->register(new Provider\AirtableProvider())
     ->register(new Provider\GraphQLProvider())
     ->register(new Provider\AuraSessionProvider());

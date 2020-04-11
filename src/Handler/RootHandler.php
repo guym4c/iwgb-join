@@ -8,6 +8,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Guym4c\Airtable\Airtable;
 use Iwgb\Join\Domain\Applicant;
+use Iwgb\Join\Handler\Api\Error\Error;
+use Iwgb\Join\Handler\Api\Error\ErrorHandler;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Collection;
@@ -19,7 +21,6 @@ use Slim\Router;
 abstract class RootHandler {
 
     protected const APPLICANT_DATA_SESSION = 'applicant';
-    private const ERROR_RETURN_URL = 'https://iwgb.org.uk/error';
     private const TYPEFORM_FORM_BASE_URL = 'https://iwgb.typeform.com/to';
 
     protected Logger $log;
@@ -87,16 +88,18 @@ abstract class RootHandler {
         return $this->sm->getSegment(self::APPLICANT_DATA_SESSION);
     }
 
-    protected function returnError(Response $response, string $error): ResponseInterface {
-        $this->log->addError($error);
-        return $response->withRedirect(self::ERROR_RETURN_URL . '?' . http_build_query([
-            'e' => $error,
-        ]));
-    }
-
     protected function redirectToRoute(Response $response, string $route): ResponseInterface {
         return $response->withRedirect(
             $this->router->relativePathFor($route)
+        );
+    }
+
+    protected function errorRedirect(Request $request, Response $response, Error $error): ResponseInterface {
+        return ErrorHandler::redirect(
+            $response,
+            $this->sm,
+            $error,
+            $this->getApplicant($request)
         );
     }
 }

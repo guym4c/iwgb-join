@@ -7,6 +7,8 @@ use Aura\Session\Session as SessionManager;
 use Doctrine\ORM;
 use Doctrine\ORM\EntityManager;
 use Iwgb\Join\Domain\Applicant;
+use Iwgb\Join\Handler\Api\Error\Error;
+use Iwgb\Join\Handler\Api\Error\ErrorHandler;
 use Iwgb\Join\Log\ApplicantEventLogProcessor;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
@@ -51,17 +53,27 @@ class ApplicantSession extends AbstractMiddleware {
     public function __invoke(Request $request, Response $response, callable $next): ResponseInterface {
 
         if ($this->session->get(self::USER_AGENT) !== $_SERVER['HTTP_USER_AGENT'] ?? null) {
-            return self::sessionInvalid($response, $this->sm);
+            return ErrorHandler::redirect($response, $this->sm,
+                Error::CSRF_USER_AGENT_MISMATCH()
+            );
         }
 
         $aid = $this->session->get(self::APPLICANT_ID);
 
         if (empty($aid)) {
-            return self::sessionInvalid($response, $this->sm);
+            return ErrorHandler::redirect($response, $this->sm,
+                Error::APPLICANT_INVALID()
+            );
         }
 
         /** @var Applicant $applicant */
         $applicant = $this->em->find(Applicant::class, $aid);
+
+        if (empty($applicant)) {
+            return ErrorHandler::redirect($response, $this->sm,
+                Error::APPLICANT_INVALID()
+            );
+        }
 
         Sentry\configureScope(function (Scope $scope) use ($applicant): void {
             $scope->setUser(['id' => $applicant->getId()]);

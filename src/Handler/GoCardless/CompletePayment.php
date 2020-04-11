@@ -12,6 +12,7 @@ use Guym4c\Airtable\AirtableApiException;
 use Guym4c\Airtable\Record;
 use Iwgb\Join\Domain\AirtablePlanRecord;
 use Iwgb\Join\Domain\Applicant;
+use Iwgb\Join\Handler\Api\Error\Error;
 use Iwgb\Join\Log\Event;
 use Iwgb\Join\Middleware\ApplicantSession;
 use Psr\Http\Message\ResponseInterface;
@@ -40,7 +41,10 @@ class CompletePayment extends GenericGoCardlessAction {
         if (empty($flowId)) {
             $this->log->addError(Event::FLOW_ID_MISSING);
             $this->em->flush();
-            return ApplicantSession::sessionInvalid($response, $this->sm);
+
+            return $this->errorRedirect($request, $response,
+                Error::NO_GC_FLOW_ID_PROVIDED()
+            );
         }
 
         // retrieve flow
@@ -52,7 +56,10 @@ class CompletePayment extends GenericGoCardlessAction {
                 'flow' => $flow->id,
             ]);
             $this->em->flush();
-            return ApplicantSession::sessionInvalid($response, $this->sm);
+
+            return $this->errorRedirect($request, $response,
+                Error::CSRF_GC_SESSION_MISMATCH()
+            );
         }
 
         $this->log->addDebug('Completing redirect flow', [
@@ -66,8 +73,9 @@ class CompletePayment extends GenericGoCardlessAction {
             ]]);
         } catch (InvalidStateException $e) {
             Sentry\captureException($e);
-            // TODO improve error handling here
-            return $this->returnError($response, 'Cannot process payment, invalid state');
+            return $this->errorRedirect($request, $response,
+                Error::PAYMENT_FAILED_NO_MANDATE()
+            );
         }
 
         // update flow
@@ -78,8 +86,9 @@ class CompletePayment extends GenericGoCardlessAction {
             $this->updateMemberRecord($applicant, $flow);
         } catch (AirtableApiException $e) {
             Sentry\captureException($e);
-            // TODO improve error handling here
-            return $this->returnError($response, ('MMS integration error'));
+            return $this->errorRedirect($request, $response,
+                Error::MMS_INTEGRATION_NO_MANDATE()
+            );
         }
 
         // get plan and branch
@@ -90,8 +99,9 @@ class CompletePayment extends GenericGoCardlessAction {
             $branch = $this->airtable->get('Branches', $plan->getBranchId());
         } catch (AirtableApiException $e) {
             Sentry\captureException($e);
-            // TODO improve error handling here
-            return $this->returnError($response, 'MMS integration error (mandate created)');
+            return $this->errorRedirect($request, $response,
+                Error::MMS_INTEGRATION_MANDATE_CREATED()
+            );
         }
 
         // create subscription
@@ -101,8 +111,9 @@ class CompletePayment extends GenericGoCardlessAction {
             );
         } catch (InvalidStateException $e) {
             Sentry\captureException($e);
-            // TODO improve error handling
-            return $this->returnError($response, 'Payment processing error');
+            return $this->errorRedirect($request, $response,
+                Error::PAYMENT_FAILED_MANDATE_CREATED()
+            );
         }
 
         $this->sm->destroy();

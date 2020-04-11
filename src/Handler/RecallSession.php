@@ -5,6 +5,7 @@ namespace Iwgb\Join\Handler;
 use Aura\Session\Segment;
 use Doctrine\ORM;
 use Iwgb\Join\Domain\Applicant;
+use Iwgb\Join\Handler\Api\Error\Error;
 use Iwgb\Join\Handler\GoCardless\CompletePayment;
 use Iwgb\Join\Middleware\ApplicantSession;
 use Iwgb\Join\Route;
@@ -37,14 +38,18 @@ class RecallSession extends AbstractSessionValidationHandler {
             !$this->validate()
             || empty($aid)
         ) {
-            return ApplicantSession::sessionInvalid($response, $this->sm);
+            return $this->errorRedirect($request, $response,
+                Error::SESSION_START_FAILED()
+            );
         }
 
         /** @var Applicant $applicant */
         $applicant = $this->em->find(Applicant::class, $aid);
 
         if (empty($applicant)) {
-            return ApplicantSession::sessionInvalid($response, $this->sm);
+            return $this->errorRedirect($request, $response,
+                Error::RECALLED_APPLICANT_INVALID()
+            );
         }
 
         ApplicantSession::initialise($this->session, $applicant);
@@ -65,8 +70,9 @@ class RecallSession extends AbstractSessionValidationHandler {
             return $this->redirectToRoute($response, Route::CORE_DATA);
         }
 
-        // TODO improve handling here
-        return ApplicantSession::sessionInvalid($response, $this->sm);
+        return $this->errorRedirect($request, $response,
+            Error::RECALLED_APPLICATION_NOT_STARTED()
+        );
 
     }
 }

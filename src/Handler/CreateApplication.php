@@ -7,6 +7,8 @@ use Aura\Session\Segment;
 use Exception;
 use Guym4c\Airtable\Record;
 use Iwgb\Join\Domain\Applicant;
+use Iwgb\Join\Handler\Api\Error\Error;
+use Iwgb\Join\Handler\Api\Error\ErrorHandler;
 use Iwgb\Join\Log\ApplicantEventLogProcessor;
 use Iwgb\Join\Log\Event;
 use Iwgb\Join\Middleware\ApplicantSession;
@@ -34,11 +36,16 @@ class CreateApplication extends AbstractSessionValidationHandler {
 
         $jobTypeSlug = $this->session->get('jobType');
 
-        if (
-            !$this->validate()
-            || empty($jobTypeSlug)
-        ) {
-            return ApplicantSession::sessionInvalid($response, $this->sm);
+        if (!$this->validate()) {
+            return $this->errorRedirect($request, $response,
+                Error::SESSION_START_FAILED()
+            );
+        }
+
+        if (empty($jobTypeSlug)) {
+            return $this->errorRedirect($request, $response,
+                Error::NO_JOB_TYPE_PROVIDED()
+            );
         }
 
         $jobType = $this->airtable->find('Job types', 'Slug', $jobTypeSlug)[0] ?? null;
@@ -48,7 +55,10 @@ class CreateApplication extends AbstractSessionValidationHandler {
                 'slug' => $jobTypeSlug,
             ]);
             $this->em->flush();
-            return ApplicantSession::sessionInvalid($response, $this->sm);
+
+            return $this->errorRedirect($request, $response,
+                Error::JOB_TYPE_INVALID()
+            );
         }
 
         $applicant = new Applicant();

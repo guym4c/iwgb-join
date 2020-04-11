@@ -63,7 +63,11 @@ $app->group('/api', function (App $app) {
         $app->post('/graphql', Handler\Api\Onboarding\GraphQLHandler::class);
     });
 
+
+
 })->add(new Middleware\BearerAuthMiddleware($c));
+
+$app->get('/api/error/{code}', Handler\Api\Error\ErrorHandler::class);
 
 /** @noinspection PhpUnhandledExceptionInspection */
 $app->run();

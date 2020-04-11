@@ -13,7 +13,8 @@
         "sentry/sdk": "^2.0",
         "guym4c/doctrine-graphql-helper": "^1.0",
         "tuupola/slim-basic-auth": "^3.2",
-        "aura/session": "^2.1"
+        "aura/session": "^2.1",
+        "myclabs/php-enum": "^1.7.6"
     },
     "autoload": {
         "psr-4": {
