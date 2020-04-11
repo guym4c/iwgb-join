@@ -3,6 +3,7 @@
 $keys = require_once APP_ROOT . '/keys.php';
 
 $env = 'dev'; // empty in production
+
 $isDev = $env === 'dev';
 $dbSuffix = empty($env) ? '' : "-{$env}";
 
@@ -30,10 +31,6 @@ return ['settings' => [
             'port'          => 25060,
             'dbname'        => "iwgb-members{$dbSuffix}",
             'charset'       => 'utf8mb4',
-            'driverOptions' => [
-                PDO::MYSQL_ATTR_SSL_CA                 => APP_ROOT . '/db.crt',
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
-            ],
         ], $keys['db']),
     ],
     'typeform'       => [

@@ -56,18 +56,16 @@ $app->group('/callback', function (App $app) {
 
 $app->group('/api', function (App $app) {
 
+    $app->get('/error/{code}', Handler\Api\Error\ErrorHandler::class);
+
     $app->group('/onboarding', function (App $app) {
 
         $app->get('/jobtypes[/{id}]', Handler\Api\Onboarding\JobTypeProxy::class);
         $app->get('/plans', Handler\Api\Onboarding\PlanProxy::class);
         $app->post('/graphql', Handler\Api\Onboarding\GraphQLHandler::class);
+
     });
-
-
-
 })->add(new Middleware\BearerAuthMiddleware($c));
-
-$app->get('/api/error/{code}', Handler\Api\Error\ErrorHandler::class);
 
 /** @noinspection PhpUnhandledExceptionInspection */
 $app->run();
