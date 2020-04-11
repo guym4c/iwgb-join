@@ -87,9 +87,6 @@ class Sorter extends GenericTypeformAction {
         );
 
         $plan = $sortingResult->fetchPlan($this->airtable);
-        $applicant->setBranch(
-            $plan->Branch->load('Branches')->getId()
-        );
 
         $this->log->addInfo('Applicant sorted into plan', [
             'plan'      => $plan->getId(),

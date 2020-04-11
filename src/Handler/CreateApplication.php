@@ -73,7 +73,6 @@ class CreateApplication extends AbstractSessionValidationHandler {
             /** @var Record $plan */
             $plan = $jobType->Plan->load('Plans');
             $applicant->setPlan($plan->getId());
-            $applicant->setBranch($plan->Branch->load('Branches')->getId());
 
             $this->log->addInfo(Event::PLAN_PLACED, [
                 'plan'   => $plan->getId(),

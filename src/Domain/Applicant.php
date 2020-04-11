@@ -33,11 +33,6 @@ class Applicant {
     /**
      * @ORM\Column(nullable = true)
      */
-    protected ?string $branch;
-
-    /**
-     * @ORM\Column(nullable = true)
-     */
     protected ?string $plan;
 
     /**
@@ -99,20 +94,6 @@ class Applicant {
      */
     public function getTimestamp(): DateTime {
         return $this->timestamp;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getBranch(): ?string {
-        return $this->branch;
-    }
-
-    /**
-     * @param string|null $branch
-     */
-    public function setBranch(?string $branch): void {
-        $this->branch = $branch;
     }
 
     /**

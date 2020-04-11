@@ -26,8 +26,8 @@ class RecallBranch extends RootHandler {
         $applicant = $this->getApplicant($request);
         $applicant->setCoreDataComplete(true);
 
-        $branch = $this->airtable->get('Branches', $applicant->getBranch());
         $plan = $this->airtable->get('Plans', $applicant->getPlan());
+        $branch = $plan->Branch->load('Branches');
 
         $this->log->addInfo(Event::REDIRECT_TO_BRANCH, [
             'applicant' => $applicant->getId(),
