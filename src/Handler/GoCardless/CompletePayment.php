@@ -14,7 +14,6 @@ use Iwgb\Join\Domain\AirtablePlanRecord;
 use Iwgb\Join\Domain\Applicant;
 use Iwgb\Join\Handler\Api\Error\Error;
 use Iwgb\Join\Log\Event;
-use Iwgb\Join\Middleware\ApplicantSession;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;

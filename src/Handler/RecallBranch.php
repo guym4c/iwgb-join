@@ -7,7 +7,6 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Guym4c\Airtable\AirtableApiException;
 use Iwgb\Join\Log\Event;
-use Iwgb\Join\Middleware\ApplicantSession;
 use Iwgb\Join\Route;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;

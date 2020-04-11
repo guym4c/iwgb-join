@@ -8,7 +8,6 @@ use Exception;
 use Guym4c\Airtable\Record;
 use Iwgb\Join\Domain\Applicant;
 use Iwgb\Join\Handler\Api\Error\Error;
-use Iwgb\Join\Handler\Api\Error\ErrorHandler;
 use Iwgb\Join\Log\ApplicantEventLogProcessor;
 use Iwgb\Join\Log\Event;
 use Iwgb\Join\Middleware\ApplicantSession;
