@@ -41,7 +41,7 @@ jobs:
             sh ./production.sh
 
       - name: Verify
-        run: echo ::set-env name=status::$(http -h https://members.iwgb.org.uk/health | grep HTTP/ | cut -d ' ' -f 2)
+        run: echo ::set-env name=status::$(http GET https://members.iwgb.org.uk/health | grep HTTP/ | cut -d ' ' -f 2)
 
       - name: Check
         if: env.status == 500
