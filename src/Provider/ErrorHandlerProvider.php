@@ -18,7 +18,11 @@ class ErrorHandlerProvider implements ServiceProviderInterface {
      * @inheritDoc
      */
     public function register(Container $c) {
-        $c['errorHandler'] = function (Request $request, Response $response, Exception $e) use ($c): ResponseInterface {
+        $c['errorHandler'] = fn (Container $c): callable => function (
+            Request $request,
+            Response $response,
+            Exception $e
+        ) use ($c): ResponseInterface {
 
             Sentry\captureException($e);
 

@@ -41,7 +41,7 @@ jobs:
             sh ./qa.sh
 
       - name: Verify
-        run: echo ::set-env name=status::$(http GET https://members-qa.iwgb.org.uk/health | grep HTTP/ | cut -d ' ' -f 2)
+        run: echo ::set-env name=status::$(http -h GET https://members-qa.iwgb.org.uk/health | grep HTTP/ | cut -d ' ' -f 2)
 
       - name: Check
         if: env.status == 500
