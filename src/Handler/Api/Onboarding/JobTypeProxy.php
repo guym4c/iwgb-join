@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpUndefinedClassInspection */
+<?php
 
 namespace Iwgb\Join\Handler\Api\Onboarding;
 

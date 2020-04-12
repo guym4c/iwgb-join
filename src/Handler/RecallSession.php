@@ -2,27 +2,18 @@
 
 namespace Iwgb\Join\Handler;
 
-use Aura\Session\Segment;
 use Doctrine\ORM;
 use Iwgb\Join\Domain\Applicant;
 use Iwgb\Join\Handler\Api\Error\Error;
 use Iwgb\Join\Handler\GoCardless\CompletePayment;
+use Iwgb\Join\Log\ApplicantEventLogProcessor;
 use Iwgb\Join\Middleware\ApplicantSession;
 use Iwgb\Join\Route;
 use Psr\Http\Message\ResponseInterface;
-use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 class RecallSession extends AbstractSessionValidationHandler {
-
-    private Segment $session;
-
-    public function __construct(Container $c) {
-        parent::__construct($c);
-
-        $this->session = $this->getSession();
-    }
 
     /**
      * {@inheritDoc}
@@ -32,27 +23,26 @@ class RecallSession extends AbstractSessionValidationHandler {
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
-        $aid = $this->session->get(ApplicantSession::APPLICANT_ID);
+        $aid = $this->getSession()->get(ApplicantSession::APPLICANT_ID);
 
         if (
             !$this->validate()
             || empty($aid)
         ) {
-            return $this->errorRedirect($request, $response,
-                Error::SESSION_START_FAILED()
-            );
+            return $this->errorRedirect($request, $response, Error::SESSION_START_FAILED());
         }
 
         /** @var Applicant $applicant */
         $applicant = $this->em->find(Applicant::class, $aid);
 
         if (empty($applicant)) {
-            return $this->errorRedirect($request, $response,
-                Error::RECALLED_APPLICANT_INVALID()
-            );
+            return $this->errorRedirect($request, $response, Error::RECALLED_APPLICANT_INVALID(), [
+                'aid' => $aid,
+            ]);
         }
 
-        ApplicantSession::initialise($this->session, $applicant);
+        ApplicantSession::initialise($this->sm, $applicant);
+        $this->log->pushProcessor(new ApplicantEventLogProcessor($applicant));
 
         if ($applicant->isPaymentComplete()) {
             return $response->withRedirect(CompletePayment::CONFIRMATION_REDIRECT_URL);
@@ -70,9 +60,7 @@ class RecallSession extends AbstractSessionValidationHandler {
             return $this->redirectToRoute($response, Route::CORE_DATA);
         }
 
-        return $this->errorRedirect($request, $response,
-            Error::RECALLED_APPLICATION_NOT_STARTED()
-        );
+        return $this->errorRedirect($request, $response, Error::RECALLED_APPLICATION_NOT_STARTED());
 
     }
 }

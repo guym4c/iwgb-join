@@ -89,7 +89,9 @@ class ApplicantSession extends AbstractMiddleware {
         return $response->withRedirect(self::INVALID_SESSION_RETURN_URL);
     }
 
-    public static function initialise(Segment $session, Applicant $applicant): void {
+    public static function initialise(SessionManager $sm, Applicant $applicant): void {
+        $session = $sm->getSegment(self::class);
+
         $session->set(self::APPLICANT_ID, $applicant->getId());
         $session->set(self::USER_AGENT, $_SERVER['HTTP_USER_AGENT']);
     }

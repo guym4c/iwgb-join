@@ -4,14 +4,16 @@ namespace Iwgb\Join\Handler;
 
 use Aura\Session\Segment;
 use Aura\Session\Session as SessionManager;
+use Doctrine\ORM;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\ORMException;
 use Guym4c\Airtable\Airtable;
 use Iwgb\Join\Domain\Applicant;
 use Iwgb\Join\Handler\Api\Error\Error;
 use Iwgb\Join\Handler\Api\Error\ErrorHandler;
+use Iwgb\Join\Middleware\ApplicantSession;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
+use Sentry;
 use Slim\Collection;
 use Slim\Container;
 use Slim\Http\Request;
@@ -20,7 +22,6 @@ use Slim\Router;
 
 abstract class RootHandler {
 
-    protected const APPLICANT_DATA_SESSION = 'applicant';
     private const TYPEFORM_FORM_BASE_URL = 'https://iwgb.typeform.com/to';
 
     protected Logger $log;
@@ -59,7 +60,7 @@ abstract class RootHandler {
      *
      * @param object $entity
      * @return EntityManager
-     * @throws ORMException
+     * @throws ORM\ORMException
      */
     protected function persist($entity): EntityManager {
         $this->em->persist($entity);
@@ -85,7 +86,7 @@ abstract class RootHandler {
     }
 
     protected function getSession(): Segment {
-        return $this->sm->getSegment(self::APPLICANT_DATA_SESSION);
+        return $this->sm->getSegment(ApplicantSession::class);
     }
 
     protected function redirectToRoute(Response $response, string $route): ResponseInterface {
@@ -94,7 +95,23 @@ abstract class RootHandler {
         );
     }
 
-    protected function errorRedirect(Request $request, Response $response, Error $error): ResponseInterface {
+    /**
+     * @param Request  $request
+     * @param Response $response
+     * @param Error    $error
+     * @param array    $context
+     * @return ResponseInterface
+     */
+    protected function errorRedirect(Request $request, Response $response, Error $error, array $context = []): ResponseInterface {
+
+        $this->log->addError(strtolower($error->getKey()), $context);
+
+        try {
+            $this->em->flush();
+        } catch (ORM\ORMException $e) {
+            Sentry\captureException($e);
+        }
+
         return ErrorHandler::redirect(
             $response,
             $this->sm,

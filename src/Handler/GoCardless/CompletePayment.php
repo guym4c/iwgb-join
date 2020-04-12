@@ -41,9 +41,7 @@ class CompletePayment extends GenericGoCardlessAction {
             $this->log->addError(Event::FLOW_ID_MISSING);
             $this->em->flush();
 
-            return $this->errorRedirect($request, $response,
-                Error::NO_GC_FLOW_ID_PROVIDED()
-            );
+            return $this->errorRedirect($request, $response, Error::NO_GC_FLOW_ID_PROVIDED());
         }
 
         // retrieve flow
@@ -51,14 +49,9 @@ class CompletePayment extends GenericGoCardlessAction {
 
         // check session from gocardless
         if ($applicant->getSession() !== $flow->session_token) {
-            $this->log->addError(Event::GOCARDLESS_SESSION_MISMATCH, [
+            return $this->errorRedirect($request, $response, Error::CSRF_GC_SESSION_MISMATCH(), [
                 'flow' => $flow->id,
             ]);
-            $this->em->flush();
-
-            return $this->errorRedirect($request, $response,
-                Error::CSRF_GC_SESSION_MISMATCH()
-            );
         }
 
         $this->log->addDebug('Completing redirect flow', [
@@ -72,9 +65,9 @@ class CompletePayment extends GenericGoCardlessAction {
             ]]);
         } catch (InvalidStateException $e) {
             Sentry\captureException($e);
-            return $this->errorRedirect($request, $response,
-                Error::PAYMENT_FAILED_NO_MANDATE()
-            );
+            return $this->errorRedirect($request, $response, Error::PAYMENT_FAILED_NO_MANDATE(), [
+                'flow' => $flow->id,
+            ]);
         }
 
         // update flow
@@ -85,22 +78,19 @@ class CompletePayment extends GenericGoCardlessAction {
             $this->updateMemberRecord($applicant, $flow);
         } catch (AirtableApiException $e) {
             Sentry\captureException($e);
-            return $this->errorRedirect($request, $response,
-                Error::MMS_INTEGRATION_NO_MANDATE()
-            );
+            return $this->errorRedirect($request, $response, Error::MMS_INTEGRATION_MANDATE_CREATED());
         }
 
         // get plan and branch
         try {
             $plan = new AirtablePlanRecord(
-                $this->airtable->get('Plans', $applicant->getPlan()));
+                $this->airtable->get('Plans', $applicant->getPlan())
+            );
 
             $branch = $this->airtable->get('Branches', $plan->getBranchId());
         } catch (AirtableApiException $e) {
             Sentry\captureException($e);
-            return $this->errorRedirect($request, $response,
-                Error::MMS_INTEGRATION_MANDATE_CREATED()
-            );
+            return $this->errorRedirect($request, $response, Error::MMS_INTEGRATION_MANDATE_CREATED());
         }
 
         // create subscription
@@ -110,9 +100,9 @@ class CompletePayment extends GenericGoCardlessAction {
             );
         } catch (InvalidStateException $e) {
             Sentry\captureException($e);
-            return $this->errorRedirect($request, $response,
-                Error::PAYMENT_FAILED_MANDATE_CREATED()
-            );
+            return $this->errorRedirect($request, $response, Error::PAYMENT_FAILED_MANDATE_CREATED(), [
+                'mandate' => $flow->links->mandate,
+            ]);
         }
 
         $this->sm->destroy();
@@ -131,11 +121,7 @@ class CompletePayment extends GenericGoCardlessAction {
      */
     private function updateMemberRecord(Applicant $applicant, RedirectFlow $flow): void {
 
-        try {
-            $record = $applicant->fetchRecord($this->airtable);
-        } catch (AirtableApiException $e) {
-            throw new AirtableApiException("(no mandate): {$e->getMessage()}");
-        }
+        $record = $applicant->fetchRecord($this->airtable);
 
         $bankAccount = $this->gocardless->customerBankAccounts()->get($flow->links->customer_bank_account);
         $customer = $this->gocardless->customers()->get($flow->links->customer);
@@ -150,11 +136,7 @@ class CompletePayment extends GenericGoCardlessAction {
         $record->{'Bank account'} = "******{$bankAccount->account_number_ending}";
         $record->Status = self::AIRTABLE_CONFIRMED_STATUS;
 
-        try {
-            $this->airtable->update($record);
-        } catch (AirtableApiException $e) {
-            throw new AirtableApiException("(mandate created): {$e->getMessage()}");
-        }
+        $this->airtable->update($record);
 
         $this->log->addInfo('Updated applicant as Confirmed', [
             'record'    => $record->getId(),

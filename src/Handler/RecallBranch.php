@@ -29,7 +29,6 @@ class RecallBranch extends RootHandler {
         $branch = $plan->Branch->load('Branches');
 
         $this->log->addInfo(Event::REDIRECT_TO_BRANCH, [
-            'applicant' => $applicant->getId(),
             'h_branch' => $branch->Name,
             'branch' => $branch->getId(),
         ]);

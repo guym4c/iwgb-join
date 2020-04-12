@@ -11,7 +11,8 @@ use Slim\Http\Response;
 
 class ErrorHandler extends RootHandler {
 
-    private const ERROR_RETURN_URL = 'https://iwgb.org.uk/error';
+    private const FATAL_ERROR_RETURN_URL = 'https://iwgb.org.uk/error';
+    private const SESSION_ERROR_RETURN_URL = 'https://iwgb.org.uk/join';
 
     /**
      * @inheritDoc
@@ -46,17 +47,23 @@ class ErrorHandler extends RootHandler {
 
         $sm->destroy();
 
-        $queryData['code'] = ($error ?? Error::UNKNOWN())->getValue();
+        $code = ($error ?? Error::UNKNOWN())->getValue();
+
+        $queryData['code'] = $code;
 
         if (!empty($applicant)) {
             $queryData['aid'] = $applicant->getId();
         }
 
-        return $response->withRedirect(self::ERROR_RETURN_URL . '?' . http_build_query($queryData));
+        $url = $code < 50
+            ? self::SESSION_ERROR_RETURN_URL
+            : self::FATAL_ERROR_RETURN_URL;
+
+        return $response->withRedirect($url . '?' . http_build_query($queryData));
     }
 
     public static function redirectPreSession(Response $response) {
-        return $response->withRedirect(self::ERROR_RETURN_URL . '?' . http_build_query([
+        return $response->withRedirect(self::FATAL_ERROR_RETURN_URL . '?' . http_build_query([
             'code' => Error::FATAL()->getValue(),
         ]));
     }

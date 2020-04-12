@@ -34,10 +34,10 @@ $app->group('/join', function (App $app) use ($c) {
 
     })->add(new Middleware\ApplicantSession($c));
 
-    $app->get('/recall/applicant', Handler\RecallSession::class)
+    $app->get('/applicant/recall', Handler\RecallSession::class)
         ->setName(Route::RECALL_SESSION);
 
-    $app->get('/recall/{aid}', Handler\RecallApplication::class)
+    $app->get('/applicant/{aid}', Handler\RecallApplication::class)
         ->setName(Route::RECALL_APPLICATION);
 
     $app->get('/session', Handler\CreateApplication::class)

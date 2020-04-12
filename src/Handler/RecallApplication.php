@@ -12,15 +12,16 @@ use Slim\Http\Response;
 class RecallApplication extends AbstractSessionValidationHandler {
 
     /**
-     * @inheritDoc
+     * @param Request  $request
+     * @param Response $response
+     * @param array    $args
+     * @return ResponseInterface
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
         $aid = $args['aid'] ?? null;
         if (empty($aid)) {
-            return $this->errorRedirect($request, $response,
-                Error::RECALLED_APPLICANT_INVALID()
-            );
+            return $this->errorRedirect($request, $response, Error::RECALLED_APPLICANT_INVALID());
         }
 
         $this->init();
