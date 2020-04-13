@@ -49,7 +49,7 @@ class RecallSession extends AbstractSessionValidationHandler {
         }
 
         if ($applicant->isBranchDataComplete()) {
-            return $this->redirectToRoute($response, Route::COMPLETE_PAYMENT);
+            return $this->redirectToRoute($response, Route::CREATE_PAYMENT);
         }
 
         if ($applicant->isCoreDataComplete()) {

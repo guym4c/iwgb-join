@@ -38,9 +38,6 @@ class CompletePayment extends GenericGoCardlessAction {
         $flowId = $request->getQueryParam(self::FLOW_ID_PARAM_KEY);
 
         if (empty($flowId)) {
-            $this->log->addError(Event::FLOW_ID_MISSING);
-            $this->em->flush();
-
             return $this->errorRedirect($request, $response, Error::NO_GC_FLOW_ID_PROVIDED());
         }
 
