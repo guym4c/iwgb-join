@@ -7,7 +7,6 @@ use Guym4c\Airtable\Record;
 
 class AirtablePlanRecord {
 
-
     private string $branch;
 
     private string $plan;
@@ -21,7 +20,7 @@ class AirtablePlanRecord {
     private int $dayOfMonth;
 
     public function __construct(Record $record) {
-        foreach (get_object_vars($this) as $property => $value) {
+        foreach (get_class_vars(self::class) as $property => $value) {
 
             if (empty($this->{$property})) {
                 $field = $record->{$this->filterPropertyName($property)};
