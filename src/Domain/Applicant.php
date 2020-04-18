@@ -184,7 +184,7 @@ class Applicant {
             return $airtable->get('Members', $this->airtableId);
         } else {
             $record = $airtable->search('Members', 'Applicant ID', $this->id)
-                          ->getRecords()[0];
+                          ->getRecords()[0] ?? null;
 
             if (empty($record)) {
                 return null;
