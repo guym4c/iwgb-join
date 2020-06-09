@@ -4,7 +4,7 @@ $env = $_ENV['ENVIRONMENT'];
 
 $isProd = $env === 'dev';
 
-$dbSuffix = empty($env) ? '' : "-{$env}";
+$dbSuffix = $isProd ? '' : "-{$env}";
 
 return ['settings' => [
     'env'                               => $env,
