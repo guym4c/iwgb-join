@@ -29,7 +29,7 @@ $RECYCLE.BIN/
 /tmp/
 /temp/
 
-keys.php
+.env
 *.crt
 
 # Composer
