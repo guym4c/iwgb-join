@@ -2,7 +2,7 @@
 
 $env = $_ENV['ENVIRONMENT'];
 
-$isProd = $env === 'dev';
+$isProd = $env === 'prod';
 
 $dbSuffix = $isProd ? '' : "-{$env}";
 
