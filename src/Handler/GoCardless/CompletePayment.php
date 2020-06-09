@@ -70,14 +70,6 @@ class CompletePayment extends GenericGoCardlessAction {
         // update flow
         $flow = $this->gocardless->redirectFlows()->get($flow->id);
 
-        // populate airtable
-        try {
-            $this->updateMemberRecord($applicant, $flow);
-        } catch (AirtableApiException $e) {
-            Sentry\captureException($e);
-            return $this->errorRedirect($request, $response, Error::MMS_INTEGRATION_MANDATE_CREATED());
-        }
-
         // get plan and branch
         try {
             $plan = new AirtablePlanRecord(
@@ -85,6 +77,14 @@ class CompletePayment extends GenericGoCardlessAction {
             );
 
             $branch = $this->airtable->get('Branches', $plan->getBranchId());
+        } catch (AirtableApiException $e) {
+            Sentry\captureException($e);
+            return $this->errorRedirect($request, $response, Error::MMS_INTEGRATION_MANDATE_CREATED());
+        }
+
+        // populate airtable
+        try {
+            $this->updateMemberRecord($applicant, $flow, $plan);
         } catch (AirtableApiException $e) {
             Sentry\captureException($e);
             return $this->errorRedirect($request, $response, Error::MMS_INTEGRATION_MANDATE_CREATED());
@@ -111,12 +111,17 @@ class CompletePayment extends GenericGoCardlessAction {
     }
 
     /**
-     * @param Applicant    $applicant
+     * @param Applicant $applicant
      * @param RedirectFlow $flow
+     * @param AirtablePlanRecord $plan
      * @return void
      * @throws AirtableApiException
      */
-    private function updateMemberRecord(Applicant $applicant, RedirectFlow $flow): void {
+    private function updateMemberRecord(
+        Applicant $applicant,
+        RedirectFlow $flow,
+        AirtablePlanRecord $plan
+    ): void {
 
         $record = $applicant->fetchRecord($this->airtable);
 
@@ -131,6 +136,7 @@ class CompletePayment extends GenericGoCardlessAction {
         $record->Postcode = $customer->postal_code;
         $record->Bank = $bankAccount->bank_name;
         $record->{'Bank account'} = "******{$bankAccount->account_number_ending}";
+        $record->Fees = $plan->getAmount();
         $record->Status = self::AIRTABLE_CONFIRMED_STATUS;
 
         $this->airtable->update($record);

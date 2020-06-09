@@ -1,57 +1,52 @@
 <?php
 
-$keys = require_once APP_ROOT . '/keys.php';
+$env = $_ENV['ENVIRONMENT'];
 
-$env = 'dev'; // empty in production
-
-$isDev = $env === 'dev';
+$isProd = $env === 'dev';
 
 $dbSuffix = empty($env) ? '' : "-{$env}";
 
 return ['settings' => [
-
     'env'                               => $env,
-    'isDev'                             => $isDev,
-    'displayErrorDetails'               => true,
+    'isProd'                            => $isProd,
+    'displayErrorDetails'               => !$isProd,
     'determineRouteBeforeAppMiddleware' => false,
-    'basePath'                          => 'https://members.iwgb.org.uk',
+    'basePath'                          => $_ENV['BASE_PATH'],
 
     'gocardless'     => [
-        'webhookSecret' => $keys['gocardless']['webhook'],
-        'accessToken'   => $keys['gocardless']['accessToken'],
+        'webhookSecret' => $_ENV['GOCARDLESS_WEBHOOK_SECRET'],
+        'accessToken'   => $_ENV['GOCARDLESS_ACCESS_TOKEN'],
     ],
     'doctrine'       => [
-        // if true, metadata caching is forcefully disabled
-        'dev_mode'  => $isDev,
-
-        // you should add any other path containing annotated entity classes
-        'entityDir' => APP_ROOT . '/src/Domain',
-
-        'connection' => array_merge([
-            'driver'        => 'pdo_mysql',
-            'host'          => 'db.iwgb.org.uk',
-            'port'          => 25060,
-            'dbname'        => "iwgb-members{$dbSuffix}",
-            'charset'       => 'utf8mb4',
-        ], $keys['db']),
+        'dev_mode'   => !$isProd,
+        'entityDir'  => APP_ROOT . '/src/Domain',
+        'connection' => [
+            'driver'   => $_ENV['DB_DRIVER'],
+            'host'     => $_ENV['DB_HOST'],
+            'port'     => $_ENV['DB_PORT'],
+            'dbname'   => "iwgb-members{$dbSuffix}",
+            'charset'  => $_ENV['DB_CHARSET'],
+            'user'     => $_ENV['DB_USER'],
+            'password' => $_ENV['DB_PASSWORD'],
+        ],
     ],
     'typeform'       => [
-        'webhookSecret'   => $keys['typeform']['webhook'],
-        'api'             => $keys['typeform']['api'],
-        'coreQuestionsId' => 'IRVE4B',
+        'webhookSecret'   => $_ENV['TYPEFORM_WEBHOOK_SECRET'],
+        'api'             => $_ENV['TYPEFORM_API_KEY'],
+        'coreQuestionsId' => $_ENV['TYPEFORM_CORE_QUESTIONS_FORM_ID'],
     ],
     'airtable'       => [
-        'key'      => $keys['airtable'],
-        'base'     => 'app8RK2AsBtnIcezs',
-        'proxyKey' => $keys['airtableProxy'],
+        'key'      => $_ENV['AIRTABLE_API_KEY'],
+        'base'     => $_ENV['AIRTABLE_BASE_ID'],
+        'proxyKey' => $_ENV['AIRTABLE_PROXY_KEY'],
     ],
     'action-network' => [
-        'token' => $keys['action-network'],
+        'token' => $_ENV['ACTION_NETWORK_API_TOKEN'],
     ],
     'api'            => [
-        'token' => $keys['api'],
+        'token' => $_ENV['MEMBERS_API_TOKEN'],
     ],
     'sentry'         => [
-        'dsn' => $keys['sentry'],
+        'dsn' => $_ENV['SENTRY_DSN'],
     ]
 ]];
