@@ -5,6 +5,8 @@ use Iwgb\Join\Middleware;
 use Iwgb\Join\Route;
 use Slim\App;
 use Slim\Container;
+use Slim\Http\Request;
+use Slim\Http\Response;
 use Teapot\StatusCode;
 use Tuupola\Middleware\CorsMiddleware;
 
@@ -64,8 +66,11 @@ $app->group('/api', function (App $app) {
         $app->get('/jobtypes[/{id}]', Handler\Api\Onboarding\JobTypeProxy::class);
         $app->get('/plans', Handler\Api\Onboarding\PlanProxy::class);
         $app->post('/graphql', Handler\Api\Onboarding\GraphQLHandler::class);
-
     });
+
+    $app->options('/{routes:.+}', fn(Request $request, Response $response) =>
+        $response->withStatus(StatusCode::NO_CONTENT));
+
 })->add(new Middleware\BearerAuthMiddleware($c))
     ->add(new CorsMiddleware([
         'origin' => ['*'],
@@ -73,7 +78,6 @@ $app->group('/api', function (App $app) {
         'headers.allow' => ['Authorization'],
         'credentials' => true,
     ]));
-;
 
 /** @noinspection PhpUnhandledExceptionInspection */
 $app->run();
