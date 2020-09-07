@@ -6,6 +6,7 @@ use Iwgb\Join\Route;
 use Slim\App;
 use Slim\Container;
 use Teapot\StatusCode;
+use Tuupola\Middleware\CorsMiddleware;
 
 /** @var Container $c */
 $c = require_once __DIR__ . '/../bootstrap.php';
@@ -65,7 +66,14 @@ $app->group('/api', function (App $app) {
         $app->post('/graphql', Handler\Api\Onboarding\GraphQLHandler::class);
 
     });
-})->add(new Middleware\BearerAuthMiddleware($c));
+})->add(new Middleware\BearerAuthMiddleware($c))
+    ->add(new CorsMiddleware([
+        'origin' => ['*'],
+        'methods' => ['GET', 'POST'],
+        'headers.allow' => ['Authorization'],
+        'credentials' => true,
+    ]));
+;
 
 /** @noinspection PhpUnhandledExceptionInspection */
 $app->run();
