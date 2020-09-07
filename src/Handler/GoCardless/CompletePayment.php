@@ -10,7 +10,7 @@ use GoCardlessPro\Resources\RedirectFlow;
 use GoCardlessPro\Resources\Subscription;
 use Guym4c\Airtable\AirtableApiException;
 use Guym4c\Airtable\Record;
-use Iwgb\Join\Domain\AirtablePlanRecord;
+use Iwgb\Join\AirtablePlanRecord;
 use Iwgb\Join\Domain\Applicant;
 use Iwgb\Join\Handler\Api\Error\Error;
 use Iwgb\Join\Log\Event;
