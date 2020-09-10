@@ -5,28 +5,14 @@ use Iwgb\Join\Middleware;
 use Iwgb\Join\Route;
 use Slim\App;
 use Slim\Container;
-use Slim\Http\Request;
-use Slim\Http\Response;
 use Teapot\StatusCode;
-use Tuupola\Middleware\CorsMiddleware;
 
 /** @var Container $c */
 $c = require_once __DIR__ . '/../bootstrap.php';
 
-$cors = new CorsMiddleware([
-    'origin' => ['*'],
-    'methods' => ['GET', 'POST'],
-    'headers.allow' => ['Authorization'],
-    'credentials' => true,
-]);
-
 $app = new App($c);
 
 $app->add(new Middleware\RemoveTrailingSlashes($c));
-
-$app->options('/{routes:.+}', fn(Request $request, Response $response) =>
-    $response->withStatus(StatusCode::NO_CONTENT)
-)->add($cors);
 
 $app->get('/health', Handler\Health::class);
 
@@ -78,8 +64,7 @@ $app->group('/api', function (App $app) {
         $app->get('/plans', Handler\Api\Onboarding\PlanProxy::class);
         $app->post('/graphql', Handler\Api\Onboarding\GraphQLHandler::class);
     });
-})->add(new Middleware\BearerAuthMiddleware($c))
-    ->add($cors);
+})->add(new Middleware\BearerAuthMiddleware($c));
 
 /** @noinspection PhpUnhandledExceptionInspection */
 $app->run();
