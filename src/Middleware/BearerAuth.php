@@ -6,7 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teapot\StatusCode;
 
-class BearerAuthMiddleware extends AbstractMiddleware {
+class BearerAuth extends AbstractMiddleware {
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface {
         $key = explode(' ', $request->getHeader('Authorization')[0] ?? '')[1];

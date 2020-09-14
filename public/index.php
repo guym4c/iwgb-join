@@ -8,17 +8,11 @@ use Slim\Container;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Teapot\StatusCode;
-use Tuupola\Middleware\CorsMiddleware;
 
 /** @var Container $c */
 $c = require_once __DIR__ . '/../bootstrap.php';
 
-$cors = new CorsMiddleware([
-    'origin' => ['*'],
-    'methods' => ['GET', 'POST'],
-    'headers.allow' => ['Authorization'],
-    'credentials' => true,
-]);
+$cors = Middleware\Cors::withOptions();
 
 $app = new App($c);
 
@@ -78,7 +72,7 @@ $app->group('/api', function (App $app) {
         $app->get('/plans', Handler\Api\Onboarding\PlanProxy::class);
         $app->post('/graphql', Handler\Api\Onboarding\GraphQLHandler::class);
     });
-})->add(new Middleware\BearerAuthMiddleware($c))
+})->add(new Middleware\BearerAuth($c))
     ->add($cors);
 
 /** @noinspection PhpUnhandledExceptionInspection */
