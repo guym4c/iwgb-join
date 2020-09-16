@@ -11,11 +11,12 @@
         "guym4c/typeform-api": "@dev",
         "guym4c/airtable-client": "^2.4.1",
         "sentry/sdk": "^2.0",
-        "guym4c/doctrine-graphql-helper": "^1.0",
+        "guym4c/doctrine-graphql-helper": "^3.0.0",
         "tuupola/slim-basic-auth": "^3.2",
         "aura/session": "^2.1",
         "myclabs/php-enum": "^1.7.6",
-        "vlucas/phpdotenv": "^5.0"
+        "vlucas/phpdotenv": "^5.0",
+        "tuupola/cors-middleware": "^1.1"
     },
     "autoload": {
         "psr-4": {

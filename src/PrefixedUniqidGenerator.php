@@ -1,6 +1,6 @@
 <?php
 
-namespace Iwgb\Join\Domain;
+namespace Iwgb\Join;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Id\AbstractIdGenerator;

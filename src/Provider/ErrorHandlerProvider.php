@@ -9,6 +9,7 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Sentry;
+use Slim\Handlers\Error;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
@@ -23,6 +24,14 @@ class ErrorHandlerProvider implements ServiceProviderInterface {
             Response $response,
             Exception $e
         ) use ($c): ResponseInterface {
+
+            if (explode('/', $request->getUri()->getPath(), 3)[1] === 'api') {
+                return (new Error(true))(
+                    $request->withHeader('Accept', 'application/json'),
+                    $response,
+                    $e,
+                );
+            }
 
             Sentry\captureException($e);
 

@@ -2,8 +2,10 @@
 
 namespace Iwgb\Join\Domain;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use GraphQL\Doctrine\Annotation as API;
+use GraphQL\Doctrine\Helper\DoctrineUniqueInterface;
 use GraphQL\Doctrine\Helper\GraphQLEntity;
 use Guym4c\Airtable\Airtable;
 use Guym4c\Airtable\AirtableApiException;
@@ -18,7 +20,7 @@ class SorterResult extends GraphQLEntity {
      * @ORM\Column(name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="\Iwgb\Join\Domain\UuidGenerator")
+     * @ORM\CustomIdGenerator(class="\Iwgb\Join\UuidGenerator")
      */
     protected string $identifier;
 
@@ -152,5 +154,14 @@ class SorterResult extends GraphQLEntity {
      */
     public function fetchPlan(Airtable $airtable): Record {
         return $airtable->get('Plans', $this->plan);
+    }
+
+    /**
+     * @API\Exclude
+     *
+     * {@inheritDoc}
+     */
+    public function hasPermission(EntityManager $em, DoctrineUniqueInterface $user, array $context, string $method): bool {
+        return true;
     }
 }

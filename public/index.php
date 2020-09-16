@@ -5,14 +5,22 @@ use Iwgb\Join\Middleware;
 use Iwgb\Join\Route;
 use Slim\App;
 use Slim\Container;
+use Slim\Http\Request;
+use Slim\Http\Response;
 use Teapot\StatusCode;
 
 /** @var Container $c */
 $c = require_once __DIR__ . '/../bootstrap.php';
 
+$cors = Middleware\Cors::withOptions();
+
 $app = new App($c);
 
 $app->add(new Middleware\RemoveTrailingSlashes($c));
+
+$app->options('/{routes:.+}', fn(Request $request, Response $response) =>
+    $response->withStatus(StatusCode::NO_CONTENT)
+)->add($cors);
 
 $app->get('/health', Handler\Health::class);
 
@@ -63,9 +71,9 @@ $app->group('/api', function (App $app) {
         $app->get('/jobtypes[/{id}]', Handler\Api\Onboarding\JobTypeProxy::class);
         $app->get('/plans', Handler\Api\Onboarding\PlanProxy::class);
         $app->post('/graphql', Handler\Api\Onboarding\GraphQLHandler::class);
-
     });
-})->add(new Middleware\BearerAuthMiddleware($c));
+})->add(new Middleware\BearerAuth($c))
+    ->add($cors);
 
 /** @noinspection PhpUnhandledExceptionInspection */
 $app->run();

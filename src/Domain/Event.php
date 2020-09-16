@@ -16,7 +16,7 @@ class Event {
      * @ORM\Column(name="id", length=15)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="\Iwgb\Join\Domain\PrefixedUniqidGenerator")
+     * @ORM\CustomIdGenerator(class="\Iwgb\Join\PrefixedUniqidGenerator")
      */
     protected string $identifier;
 
