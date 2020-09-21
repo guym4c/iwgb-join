@@ -64,6 +64,8 @@ $app->group('/callback', function (App $app) {
 
 $app->group('/api', function (App $app) {
 
+    $app->get('/flushCache', Handler\Api\FlushCache::class);
+
     $app->get('/error/{code}', Handler\Api\Error\ErrorHandler::class);
 
     $app->group('/onboarding', function (App $app) {
