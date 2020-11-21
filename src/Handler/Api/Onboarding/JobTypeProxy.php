@@ -3,7 +3,9 @@
 namespace Iwgb\Join\Handler\Api\Onboarding;
 
 use GuzzleHttp;
+use GuzzleHttp\Exception\GuzzleException;
 use Iwgb\Join\Handler\RootHandler;
+use Iwgb\Join\Provider\Provider;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Container;
 use Slim\Http\Request;
@@ -21,7 +23,7 @@ class JobTypeProxy extends RootHandler {
     public function __construct(Container $c) {
         parent::__construct($c);
 
-        $this->http = $c['http'];
+        $this->http = $c[Provider::HTTP];
     }
 
     /**
@@ -43,8 +45,9 @@ class JobTypeProxy extends RootHandler {
 
     /**
      * @param string $method
-     * @param array  $args
+     * @param array $args
      * @return ResponseInterface
+     * @throws GuzzleException
      */
     private function processTypeformProxy(string $method, array $args): ?ResponseInterface {
         switch ($method) {
@@ -59,7 +62,6 @@ class JobTypeProxy extends RootHandler {
                 }
 
                 return $this->typeformRequest('GET', [], "/{$args['id']}");
-                break;
             default:
                 return null;
         }
@@ -67,9 +69,10 @@ class JobTypeProxy extends RootHandler {
 
     /**
      * @param string $method
-     * @param array  $options
+     * @param array $options
      * @param string $uri
      * @return ResponseInterface
+     * @throws GuzzleException
      */
     private function typeformRequest(string $method, array $options = [], string $uri = ''): ResponseInterface {
         return $this->http->send(new GuzzleRequest($method, self::TYPEFORM_BASE_URL . $uri, [

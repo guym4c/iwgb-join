@@ -14,8 +14,8 @@ class GraphQLProvider implements ServiceProviderInterface {
      */
     public function register(Container $c) {
 
-        $c['graphql'] = fn(): EntitySchemaBuilder =>
-            (new EntitySchemaBuilder($c['em'], [
+        $c[Provider::GRAPHQL] = fn(): EntitySchemaBuilder =>
+            (new EntitySchemaBuilder($c[Provider::ENTITY_MANAGER], [
                 'sorterResults' => SorterResult::class,
             ]));
     }

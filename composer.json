@@ -16,7 +16,8 @@
         "aura/session": "^2.1",
         "myclabs/php-enum": "^1.7.6",
         "vlucas/phpdotenv": "^5.0",
-        "tuupola/cors-middleware": "^1.1"
+        "tuupola/cors-middleware": "^1.1",
+        "mustache/mustache": "^2.13"
     },
     "autoload": {
         "psr-4": {

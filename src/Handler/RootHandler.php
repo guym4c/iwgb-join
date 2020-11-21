@@ -11,6 +11,7 @@ use Iwgb\Join\Domain\Applicant;
 use Iwgb\Join\Handler\Api\Error\Error;
 use Iwgb\Join\Handler\Api\Error\ErrorHandler;
 use Iwgb\Join\Middleware\ApplicantSession;
+use Iwgb\Join\Provider\Provider;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Sentry;
@@ -37,12 +38,12 @@ abstract class RootHandler {
     protected Router $router;
 
     public function __construct(Container $c) {
-        $this->log = $c['log'];
-        $this->settings = $c['settings'];
-        $this->em = $c['em'];
-        $this->airtable = $c['airtable'];
-        $this->sm = $c['session'];
-        $this->router = $c['router'];
+        $this->log = $c[Provider::LOG];
+        $this->settings = $c[Provider::SETTINGS];
+        $this->em = $c[Provider::ENTITY_MANAGER];
+        $this->airtable = $c[Provider::AIRTABLE];
+        $this->sm = $c[Provider::SESSION];
+        $this->router = $c[Provider::ROUTER];
 
         $this->router->setBasePath($this->settings['basePath']);
     }
@@ -73,7 +74,6 @@ abstract class RootHandler {
         Response $response,
         array $query = []
     ): ResponseInterface {
-
         $queryString = http_build_query(array_merge($query, [
             'aid' => $this->getApplicant($request)->getId(),
         ]));

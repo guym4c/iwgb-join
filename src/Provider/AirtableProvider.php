@@ -14,12 +14,12 @@ class AirtableProvider implements ServiceProviderInterface {
      * {@inheritdoc}
      */
     public function register(Container $c) {
-        $c['airtable'] = fn (): Airtable =>
-            new Airtable($c['settings']['airtable']['key'], $c['settings']['airtable']['base'],
+        $c[Provider::AIRTABLE] = fn (): Airtable =>
+            new Airtable($c[Provider::SETTINGS]['airtable']['key'], $c[Provider::SETTINGS]['airtable']['base'],
                 new FilesystemCache(APP_ROOT . '/var/cache/airtable'),
                 ['Branches', 'Plans', 'Job types'],
                 'https://airtable.iwgb.org.uk/v0',
-                ['X-Proxy-Auth' => $c['settings']['airtable']['proxyKey']],
+                ['X-Proxy-Auth' => $c[Provider::SETTINGS]['airtable']['proxyKey']],
                 false
             );
     }

@@ -65,9 +65,9 @@ class CreatePaymentFlow extends GenericGoCardlessAction {
         return empty($language)
             ? 'en'
             : [
-            'English' => 'en',
-            'Spanish' => 'es',
-            'Portuguese' => 'pt',
-        ][$language] ?? 'en';
+                'English' => 'en',
+                'Spanish' => 'es',
+                'Portuguese' => 'pt',
+            ][$language] ?? 'en';
     }
 }

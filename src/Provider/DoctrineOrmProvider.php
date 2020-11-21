@@ -16,17 +16,17 @@ class DoctrineOrmProvider implements ServiceProviderInterface {
      * {@inheritdoc}
      */
     public function register(Container $c) {
+        $c[Provider::ENTITY_MANAGER] = function (Container $c): EntityManager {
+            $settings = $c[Provider::SETTINGS];
 
-        $c['em'] = function (Container $c): EntityManager {
             $config = Setup::createAnnotationMetadataConfiguration(
-                [$c['settings']['doctrine']['entityDir']],
-                $c['settings']['doctrine']['dev_mode']);
+                [$settings['doctrine']['entityDir']],
+                $settings['doctrine']['dev_mode']);
 
-            /** @noinspection PhpParamsInspection */
             $config->setMetadataDriverImpl(
                 new AnnotationDriver(
                     new AnnotationReader,
-                    $c['settings']['doctrine']['entityDir']
+                    $settings['doctrine']['entityDir']
                 )
             );
 
@@ -34,7 +34,7 @@ class DoctrineOrmProvider implements ServiceProviderInterface {
                 new FilesystemCache(APP_ROOT . '/var/doctrine',));
 
             return EntityManager::create(
-                $c['settings']['doctrine']['connection'],
+                $settings['doctrine']['connection'],
                 $config);
         };
     }

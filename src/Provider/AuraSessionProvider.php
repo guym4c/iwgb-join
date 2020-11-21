@@ -14,6 +14,6 @@ class AuraSessionProvider implements ServiceProviderInterface {
      */
     public function register(Container $c) {
         session_name('IwgbMemberSession');
-        $c['session'] = fn(): Session => (new SessionFactory())->newInstance($_COOKIE);
+        $c[Provider::SESSION] = fn(): Session => (new SessionFactory())->newInstance($_COOKIE);
     }
 }

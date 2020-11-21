@@ -5,6 +5,7 @@ namespace Iwgb\Join\Handler\Api\Onboarding;
 
 use GraphQL\Doctrine\Helper\EntitySchemaBuilder;
 use Iwgb\Join\Handler\RootHandler;
+use Iwgb\Join\Provider\Provider;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Container;
 use Slim\Http\Request;
@@ -17,7 +18,7 @@ class GraphQLHandler extends RootHandler {
     public function __construct(Container $c) {
         parent::__construct($c);
 
-        $this->graphql = $c['graphql'];
+        $this->graphql = $c[Provider::GRAPHQL];
     }
 
     /**

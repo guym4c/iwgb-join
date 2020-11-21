@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Iwgb\Join\Provider;
 
 use Exception;
@@ -18,10 +17,10 @@ class LogProvider  implements ServiceProviderInterface {
      */
     public function register(Container $c) {
 
-        $c['log'] = function () use ($c): Logger {
+        $c[Provider::LOG] = function () use ($c): Logger {
             $log = new Logger('applications');
             $log->pushHandler(new StreamHandler(APP_ROOT . '/var/log/applications.log', Logger::DEBUG));
-            $log->pushHandler(new ApplicantEventLogHandler($c['em'], Logger::INFO));
+            $log->pushHandler(new ApplicantEventLogHandler($c[Provider::ENTITY_MANAGER], Logger::INFO));
             return $log;
         };
     }

@@ -12,6 +12,6 @@ class GuzzleHttpProvider implements ServiceProviderInterface {
      * {@inheritdoc}
      */
     public function register(Container $c) {
-        $c['http'] = fn (): GuzzleHttp\Client => new GuzzleHttp\Client();
+        $c[Provider::HTTP] = fn (): GuzzleHttp\Client => new GuzzleHttp\Client();
     }
 }

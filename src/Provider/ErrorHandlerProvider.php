@@ -19,7 +19,7 @@ class ErrorHandlerProvider implements ServiceProviderInterface {
      * @inheritDoc
      */
     public function register(Container $c) {
-        $c['errorHandler'] = fn (Container $c): callable => function (
+        $c[Provider::ERROR_HANDLER] = fn (Container $c): callable => function (
             Request $request,
             Response $response,
             Exception $e
@@ -37,7 +37,7 @@ class ErrorHandlerProvider implements ServiceProviderInterface {
 
             try {
                 /** @var Logger $log */
-                $log = $c['log'];
+                $log = $c[Provider::LOG];
 
                 if (!empty($log)) {
                     $log->addError($e->getMessage(), [

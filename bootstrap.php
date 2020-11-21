@@ -2,6 +2,7 @@
 
 use Dotenv\Dotenv;
 use Iwgb\Join\Provider;
+use Iwgb\Join\Provider\Provider as ContainerService;
 use Slim\Container;
 
 define('APP_ROOT', __DIR__);
@@ -12,8 +13,8 @@ Dotenv::createImmutable(APP_ROOT)->load();
 
 $c = new Container(require __DIR__ . '/settings.php');
 
-if (!in_array($c['settings']['env'], ['dev', 'qa'])) {
-    Sentry\init(['dsn' => $c['settings']['sentry']['dsn']]);
+if (!in_array($c[ContainerService::SETTINGS]['env'], ['dev', 'qa'])) {
+    Sentry\init(['dsn' => $c[ContainerService::SETTINGS]['sentry']['dsn']]);
 }
 
 $c->register(new Provider\DoctrineOrmProvider())

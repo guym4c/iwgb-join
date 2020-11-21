@@ -107,9 +107,7 @@ class Sorter extends GenericTypeformAction {
 
             $conditional = $result->getConditional();
             if (in_array($conditional, ['true', 'false'])) {
-                $conditional = $conditional == 'true'
-                    ? true
-                    : false;
+                $conditional = $conditional === 'true';
             } else {
                 $conditional = strval($conditional);
             }
