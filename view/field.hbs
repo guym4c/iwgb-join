@@ -1,0 +1,39 @@
+<div class="form-group">
+    <label for="{{id}}">{{title}}</label>
+    {{#if type.date}}
+        {{> date}}
+    {{/if}}
+    {{#if type.dropdown}}
+        {{> dropdown}}
+    {{/if}}
+    {{#if type.email}}
+        {{> email}}
+    {{/if}}
+    {{#if type.legal}}
+        {{> legal}}
+    {{/if}}
+    {{#if type.long_text}}
+        {{> long_text}}
+    {{/if}}
+    {{#if type.multiple_choice}}
+        {{> dropdown}}
+    {{/if}}
+    {{#if type.number}}
+        {{> number}}
+    {{/if}}
+    {{#if type.phone_number}}
+        {{> short_text}}
+    {{/if}}
+    {{#if type.yes_no}}
+        {{> yes_no}}
+    {{/if}}
+    {{#if type.short_text}}
+        {{> short_text}}
+    {{/if}}
+
+    {{#if description}}
+        <div class="line-height-sm mt-1">
+            <small>{{description}}</small>
+        </div>
+    {{/if}}
+</div>

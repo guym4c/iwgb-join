@@ -23,6 +23,7 @@ $c->register(new Provider\DoctrineOrmProvider())
     ->register(new Provider\GuzzleHttpProvider())
     ->register(new Provider\AirtableProvider())
     ->register(new Provider\GraphQLProvider())
-    ->register(new Provider\AuraSessionProvider());
+    ->register(new Provider\AuraSessionProvider())
+    ->register(new Provider\HandlebarsViewProvider());
 
 return $c;

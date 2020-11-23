@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2fdac471d9b2088691681d8606217331",
+    "content-hash": "6f50a8901171f5215fdc98bac2258aca",
     "packages": [
         {
             "name": "aura/session",
@@ -1520,12 +1520,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guym4c/typeform-api.git",
-                "reference": "1f6ec88f8366a5d3313171c795b88f306cfc183a"
+                "reference": "d465ca8dc77492bda398303b782aa3dcc9aaa2eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guym4c/typeform-api/zipball/1f6ec88f8366a5d3313171c795b88f306cfc183a",
-                "reference": "1f6ec88f8366a5d3313171c795b88f306cfc183a",
+                "url": "https://api.github.com/repos/guym4c/typeform-api/zipball/d465ca8dc77492bda398303b782aa3dcc9aaa2eb",
+                "reference": "d465ca8dc77492bda398303b782aa3dcc9aaa2eb",
                 "shasum": ""
             },
             "require": {
@@ -1552,8 +1552,8 @@
             "authors": [
                 {
                     "name": "Guy Mac",
-                    "role": "Developer",
-                    "email": "hello@guymac.eu"
+                    "email": "hello@guymac.eu",
+                    "role": "Developer"
                 }
             ],
             "description": "PHP Typeform API client",
@@ -1562,7 +1562,7 @@
                 "api",
                 "typeform"
             ],
-            "time": "2019-08-14T10:21:04+00:00"
+            "time": "2020-11-23T00:13:13+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -2012,52 +2012,6 @@
                 }
             ],
             "time": "2020-05-22T07:31:27+00:00"
-        },
-        {
-            "name": "mustache/mustache",
-            "version": "v2.13.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bobthecow/mustache.php.git",
-                "reference": "e95c5a008c23d3151d59ea72484d4f72049ab7f4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/mustache.php/zipball/e95c5a008c23d3151d59ea72484d4f72049ab7f4",
-                "reference": "e95c5a008c23d3151d59ea72484d4f72049ab7f4",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.4"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "~1.11",
-                "phpunit/phpunit": "~3.7|~4.0|~5.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Mustache": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Justin Hileman",
-                    "email": "justin@justinhileman.info",
-                    "homepage": "http://justinhileman.com"
-                }
-            ],
-            "description": "A Mustache implementation in PHP.",
-            "homepage": "https://github.com/bobthecow/mustache.php",
-            "keywords": [
-                "mustache",
-                "templating"
-            ],
-            "time": "2019-11-23T21:40:31+00:00"
         },
         {
             "name": "myclabs/php-enum",
@@ -3390,6 +3344,59 @@
                 "uuid"
             ],
             "time": "2020-03-29T20:13:32+00:00"
+        },
+        {
+            "name": "salesforce/handlebars-php",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/salesforce/handlebars-php.git",
+                "reference": "59fc47c7b2701659cb483d0f3461c4f712693b2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/salesforce/handlebars-php/zipball/59fc47c7b2701659cb483d0f3461c4f712693b2b",
+                "reference": "59fc47c7b2701659cb483d0f3461c4f712693b2b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Handlebars": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "fzerorubigd",
+                    "email": "fzerorubigd@gmail.com"
+                },
+                {
+                    "name": "Behrooz Shabani (everplays)",
+                    "email": "everplays@gmail.com"
+                },
+                {
+                    "name": "Mardix",
+                    "homepage": "https://github.com/mardix"
+                }
+            ],
+            "description": "Handlebars processor for php",
+            "homepage": "http://www.github.com/salesforce/handlebars-php",
+            "keywords": [
+                "handlebars",
+                "mustache",
+                "templating"
+            ],
+            "time": "2020-06-08T17:23:52+00:00"
         },
         {
             "name": "sentry/sdk",

@@ -7,6 +7,7 @@ use Exception;
 use Guym4c\Airtable\Record;
 use Iwgb\Join\Domain\Applicant;
 use Iwgb\Join\Handler\Api\Error\Error;
+use Iwgb\Join\Handler\Typeform\AbstractTypeformHandler;
 use Iwgb\Join\Log\ApplicantEventLogProcessor;
 use Iwgb\Join\Log\Event;
 use Iwgb\Join\Middleware\ApplicantSession;
@@ -15,7 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class CreateApplication extends AbstractSessionValidationHandler {
+class CreateApplication extends AbstractTypeformHandler {
 
     /**
      * {@inheritdoc}
@@ -67,10 +68,12 @@ class CreateApplication extends AbstractSessionValidationHandler {
 
         $this->em->flush();
 
-        return self::redirectToTypeform(
+        return $this->redirectToTypeform(
             $jobType->{'Typeform ID'},
             $request->withAttribute('applicant', $applicant),
-            $response
+            $response,
+            [],
+            $this->router->relativePathFor(Route::SORTER)
         );
     }
 }

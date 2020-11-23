@@ -40,6 +40,13 @@ $app->group('/join', function (App $app) use ($c) {
         $app->get('/confirm', Handler\GoCardless\CompletePayment::class)
             ->setName(Route::COMPLETE_PAYMENT);
 
+        $app->group('/form', function (App $app) {
+            $app->get('', Handler\Typeform\MockForm::class)
+                ->setName(Route::MOCK_FORM);
+
+//            $app->post('', Handler\Typeform\MockFormSubmit::class)
+//                ->setName(Route::MOCK_FORM_SUBMIT);
+        });
     })->add(new Middleware\ApplicantSession($c));
 
     $app->get('/applicant/recall', Handler\RecallSession::class)
@@ -55,11 +62,9 @@ $app->group('/join', function (App $app) use ($c) {
 });
 
 $app->group('/callback', function (App $app) {
-
-    $app->redirect('/gocardless/confirm', '/join/confirm', StatusCode::MOVED_PERMANENTLY);
-
-    $app->post('/typeform/sorter', Handler\Typeform\Sorter::class);
     $app->post('/gocardless/event', Handler\GoCardless\GoCardlessEvent::class);
+    $app->map(['GET', 'POST'], '/typeform/sorter', Handler\Typeform\Sorter::class)
+        ->setName(Route::SORTER);
 });
 
 $app->group('/api', function (App $app) {

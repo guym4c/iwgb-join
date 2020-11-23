@@ -23,8 +23,6 @@ use Slim\Router;
 
 abstract class RootHandler {
 
-    private const TYPEFORM_FORM_BASE_URL = 'https://iwgb.typeform.com/to';
-
     protected Logger $log;
 
     protected Collection $settings;
@@ -45,7 +43,7 @@ abstract class RootHandler {
         $this->sm = $c[Provider::SESSION];
         $this->router = $c[Provider::ROUTER];
 
-        $this->router->setBasePath($this->settings['basePath']);
+        $this->router->setBasePath($this->settings['baseUrl']);
     }
 
     /**
@@ -68,19 +66,6 @@ abstract class RootHandler {
         return $this->em;
     }
 
-    protected function redirectToTypeform(
-        string $formId,
-        Request $request,
-        Response $response,
-        array $query = []
-    ): ResponseInterface {
-        $queryString = http_build_query(array_merge($query, [
-            'aid' => $this->getApplicant($request)->getId(),
-        ]));
-        return $response->withRedirect(sprintf("%s/{$formId}?{$queryString}",
-            self::TYPEFORM_FORM_BASE_URL));
-    }
-
     protected function getApplicant(Request $request): ?Applicant {
         return $request->getAttribute('applicant');
     }
@@ -89,9 +74,12 @@ abstract class RootHandler {
         return $this->sm->getSegment(ApplicantSession::class);
     }
 
-    protected function redirectToRoute(Response $response, string $route): ResponseInterface {
+    protected function redirectToRoute(Response $response, string $route, array $query = []): ResponseInterface {
+        $routePath = $this->router->relativePathFor($route);
         return $response->withRedirect(
-            $this->router->relativePathFor($route)
+            count($query) === 0
+                ? $routePath
+                : sprintf("{$routePath}?%s", http_build_query($query))
         );
     }
 

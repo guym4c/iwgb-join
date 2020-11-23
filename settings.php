@@ -3,15 +3,25 @@
 $env = $_ENV['ENVIRONMENT'];
 
 $isProd = $env === 'prod';
+$isQa = $env === 'qa';
 
 $dbSuffix = $isProd ? '' : "-{$env}";
+
+$baseUrl = $_ENV['BASE_HOST'];
+if ($isQa) {
+    $baseUrl = "https://qa.{$baseUrl}";
+} else if ($isProd) {
+    $baseUrl = "https://{$baseUrl}";
+} else {
+    $baseUrl = "http://localhost";
+}
 
 return ['settings' => [
     'env'                               => $env,
     'isProd'                            => $isProd,
     'displayErrorDetails'               => !$isProd,
     'determineRouteBeforeAppMiddleware' => false,
-    'basePath'                          => $_ENV['BASE_PATH'],
+    'baseUrl'                           => $baseUrl,
 
     'gocardless'     => [
         'webhookSecret' => $_ENV['GOCARDLESS_WEBHOOK_SECRET'],

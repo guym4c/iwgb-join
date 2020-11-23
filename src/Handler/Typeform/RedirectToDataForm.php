@@ -3,13 +3,12 @@
 namespace Iwgb\Join\Handler\Typeform;
 
 use Doctrine\ORM;
-use Iwgb\Join\Handler\RootHandler;
 use Iwgb\Join\Log\Event;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class RedirectToDataForm extends RootHandler {
+class RedirectToDataForm extends AbstractTypeformHandler {
 
     /**
      * {@inheritDoc}
@@ -21,7 +20,7 @@ class RedirectToDataForm extends RootHandler {
         $this->log->addInfo(Event::REDIRECT_TO_DATA);
         $this->em->flush();
 
-        return self::redirectToTypeform($this->settings['typeform']['coreQuestionsId'], $request, $response);
+        return $this->redirectToTypeform($this->settings['typeform']['coreQuestionsId'], $request, $response);
     }
 
 }

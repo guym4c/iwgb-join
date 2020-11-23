@@ -13,4 +13,9 @@ class Route {
     public const RECALL_APPLICATION = 'recallApplication';
     public const RECALL_SESSION = 'recallSession';
 
+    public const SORTER = 'sorter';
+
+    public const MOCK_FORM = 'mockForm';
+    public const MOCK_FORM_SUBMIT = 'mockFormSubmit';
+
 }

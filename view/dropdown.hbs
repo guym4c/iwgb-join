@@ -1,0 +1,12 @@
+<!--suppress HtmlFormInputWithoutLabel -->
+<select id="{{id}}"
+        name="{{id}}"
+        class="custom-select"
+>
+    <option></option>
+    {{#each choices}}
+        <option value="{{ref}}">
+            {{label}}
+        </option>
+    {{/each}}
+</select>

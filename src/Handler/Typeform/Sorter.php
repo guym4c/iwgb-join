@@ -7,9 +7,12 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Exception;
 use Guym4c\Airtable\AirtableApiException;
+use Guym4c\TypeformAPI\Model\Resource\Form;
 use Guym4c\TypeformAPI\Model\Webhook\Answer;
 use Guym4c\TypeformAPI\Model\Webhook\FormResponse;
+use Guym4c\TypeformAPI\Model\Webhook\WebhookRequest;
 use Guym4c\TypeformAPI\Typeform;
+use Guym4c\TypeformAPI\TypeformApiException;
 use Iwgb\Join\Domain\Applicant;
 use Iwgb\Join\Domain\SorterResult;
 use Iwgb\Join\Log\ApplicantEventLogProcessor;
@@ -18,7 +21,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Teapot\StatusCode;
 
-class Sorter extends GenericTypeformAction {
+class Sorter extends AbstractTypeformHandler {
 
     /**
      * {@inheritdoc}
@@ -29,11 +32,16 @@ class Sorter extends GenericTypeformAction {
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
 
-        $event = Typeform::parseWebhook($request, $this->settings['typeform']['webhookSecret']);
+        $event = $request->getMethod() === 'GET' && !$this->settings['isProd']
+            ? $this->generateMockEvent($request)
+            : Typeform::parseWebhook($request, $this->settings['typeform']['webhookSecret']);
 
         $this->log->addDebug('Received Typeform event', ['event' => $event->id]);
 
-        if (!$event->valid) {
+        if (
+            $this->settings['isProd']
+            && !$event->valid
+        ) {
             $this->log->addError('Typeform event signature invalid', ['event' => $event->id]);
             return $response->withStatus(StatusCode::UNAUTHORIZED);
         }
@@ -46,7 +54,10 @@ class Sorter extends GenericTypeformAction {
             $this->log->addError('No sorting result found');
         }
 
-        return $response->withStatus(StatusCode::NO_CONTENT);
+        $redirect = $request->getQueryParam('redirect');
+        return empty($redirect)
+            ? $response->withStatus(StatusCode::NO_CONTENT)
+            : $response->withRedirect($redirect);
     }
 
     /**
@@ -127,6 +138,60 @@ class Sorter extends GenericTypeformAction {
         }
 
         return null;
+    }
+
+    private const METADATA_QUERY_KEYS = [
+        'aid' => true,
+        'form' => true,
+        'redirect' => true,
+    ];
+
+    /**
+     * @param Request $request
+     * @return WebhookRequest
+     * @throws TypeformApiException
+     */
+    private function generateMockEvent(Request $request): WebhookRequest {
+        $formId = $request->getQueryParam('form');
+        $form = Form::get($this->typeform, $formId);
+
+        $fieldsJson = [];
+        foreach ($form->fields as $field) {
+            $fieldsJson[] = [
+                'id' => $field->id,
+                'title' => $field->title,
+                'description' => $field->description,
+                'ref' => $field->ref,
+            ];
+        }
+
+        $definition = [
+            'title' => $form->title,
+            'fields' => $fieldsJson,
+        ];
+
+        $answesFromQuery = array_diff_key($request->getQueryParams(), self::METADATA_QUERY_KEYS);
+        $answersJson = [];
+        foreach ($answesFromQuery as $fieldId => $answer) {
+            $answersJson[] = [
+                'text' => $answer,
+                'field' => ['id' => $fieldId],
+            ];
+        }
+
+        return new WebhookRequest([
+            'event_id' => uniqid(),
+            'event_type' => 'form_response',
+            'form_response' => [
+                'form_id' => $formId,
+                'token' => '',
+                'landed_at' => 'now',
+                'submitted_at' => 'now',
+                'hidden' => ['aid' => $request->getQueryParam('aid')],
+                'definition' => $definition,
+                'answers' => $answersJson,
+            ],
+        ]);
     }
 
 }
