@@ -13,13 +13,12 @@ use Guym4c\Airtable\Record;
 use Iwgb\Join\AirtablePlanRecord;
 use Iwgb\Join\Domain\Applicant;
 use Iwgb\Join\Handler\Api\Error\Error;
-use Iwgb\Join\Log\Event;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Sentry;
 
-class CompletePayment extends GenericGoCardlessAction {
+class CompletePayment extends AbstractGoCardlessHandler {
 
     private const FLOW_ID_PARAM_KEY = 'redirect_flow_id';
     private const AIRTABLE_CONFIRMED_STATUS = 'Member';
@@ -42,7 +41,7 @@ class CompletePayment extends GenericGoCardlessAction {
         }
 
         // retrieve flow
-        $flow = $this->gocardless->redirectFlows()->get($flowId);
+        $flow = $this->goCardless->redirectFlows()->get($flowId);
 
         // check session from gocardless
         if ($applicant->getSession() !== $flow->session_token) {
@@ -57,7 +56,7 @@ class CompletePayment extends GenericGoCardlessAction {
 
         // complete flow
         try {
-            $this->gocardless->redirectFlows()->complete($flow->id, ['params' => [
+            $this->goCardless->redirectFlows()->complete($flow->id, ['params' => [
                 'session_token' => $applicant->getSession(),
             ]]);
         } catch (InvalidStateException $e) {
@@ -68,7 +67,7 @@ class CompletePayment extends GenericGoCardlessAction {
         }
 
         // update flow
-        $flow = $this->gocardless->redirectFlows()->get($flow->id);
+        $flow = $this->goCardless->redirectFlows()->get($flow->id);
 
         // get plan and branch
         try {
@@ -93,7 +92,7 @@ class CompletePayment extends GenericGoCardlessAction {
         // create subscription
         try {
             $this->createSubscription($plan, $branch,
-                $this->gocardless->mandates()->get($flow->links->mandate)
+                $this->goCardless->mandates()->get($flow->links->mandate)
             );
         } catch (InvalidStateException $e) {
             Sentry\captureException($e);
@@ -125,8 +124,8 @@ class CompletePayment extends GenericGoCardlessAction {
 
         $record = $applicant->fetchRecord($this->airtable);
 
-        $bankAccount = $this->gocardless->customerBankAccounts()->get($flow->links->customer_bank_account);
-        $customer = $this->gocardless->customers()->get($flow->links->customer);
+        $bankAccount = $this->goCardless->customerBankAccounts()->get($flow->links->customer_bank_account);
+        $customer = $this->goCardless->customers()->get($flow->links->customer);
 
         $record->{'Customer ID'} = $customer->id;
         $record->{'Address L1'} = $customer->address_line1;
@@ -140,6 +139,10 @@ class CompletePayment extends GenericGoCardlessAction {
         $record->Status = self::AIRTABLE_CONFIRMED_STATUS;
 
         $this->airtable->update($record);
+
+        $this->goCardless->customers()->update($customer->id, ['params' => [
+            'language' => self::parseLanguage($record->Language),
+        ]]);
 
         $this->log->addInfo('Updated applicant as Confirmed', [
             'record'    => $record->getId(),
@@ -157,7 +160,7 @@ class CompletePayment extends GenericGoCardlessAction {
 
         $planName = "{$branch->Name}: {$plan->getPlanName()}";
 
-        $subscription = $this->gocardless->subscriptions()->create(['params' => array_merge([
+        $subscription = $this->goCardless->subscriptions()->create(['params' => array_merge([
             'amount'   => $plan->getAmount() * 100,
             'currency' => 'GBP',
             'name'     => $planName,

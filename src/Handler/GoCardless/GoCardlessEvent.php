@@ -11,7 +11,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Http\StatusCode;
 
-class GoCardlessEvent extends GenericGoCardlessAction {
+class GoCardlessEvent extends AbstractGoCardlessHandler {
 
     /**
      * {@inheritdoc}
@@ -43,7 +43,7 @@ class GoCardlessEvent extends GenericGoCardlessAction {
 
                         case 'cancelled':
 
-                            $member = $this->getMemberFromSubscription($this->gocardless->subscriptions()
+                            $member = $this->getMemberFromSubscription($this->goCardless->subscriptions()
                                 ->get($event->links->subscription));
 
                             if (empty($member)) {
@@ -67,7 +67,7 @@ class GoCardlessEvent extends GenericGoCardlessAction {
 
                         case 'failed':
 
-                            $member = $this->getMemberFromPayment($this->gocardless->payments()
+                            $member = $this->getMemberFromPayment($this->goCardless->payments()
                                 ->get($event->links->payment));
 
                             if (empty($member)) {
@@ -111,7 +111,7 @@ class GoCardlessEvent extends GenericGoCardlessAction {
      * @throws AirtableApiException
      */
     private function getMemberFromPayment(GoCardless\Resources\Payment $payment): ?Record {
-        return $this->getMemberFromCustomerID($this->gocardless->mandates()->get($payment->links->mandate)
+        return $this->getMemberFromCustomerID($this->goCardless->mandates()->get($payment->links->mandate)
             ->links->customer);
     }
 
@@ -121,7 +121,7 @@ class GoCardlessEvent extends GenericGoCardlessAction {
      * @throws AirtableApiException
      */
     private function getMemberFromSubscription(GoCardless\Resources\Subscription $subscription): ?Record {
-        return $this->getMemberFromCustomerID($this->gocardless->mandates()->get($subscription->links->mandate)
+        return $this->getMemberFromCustomerID($this->goCardless->mandates()->get($subscription->links->mandate)
             ->links->customer);
     }
 

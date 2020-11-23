@@ -15,7 +15,7 @@ use Sentry;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class CreatePaymentFlow extends GenericGoCardlessAction {
+class CreatePaymentFlow extends AbstractGoCardlessHandler {
 
     /**
      * {@inheritdoc}
@@ -37,7 +37,7 @@ class CreatePaymentFlow extends GenericGoCardlessAction {
         $plan = $this->airtable->get('Plans', $applicant->getPlan());
 
         try {
-            $flow = $this->gocardless->redirectFlows()->create(['params' => [
+            $flow = $this->goCardless->redirectFlows()->create(['params' => [
                 'session_token'        => $applicant->getSession(),
                 'success_redirect_url' => $this->router->urlFor(Route::COMPLETE_PAYMENT),
                 'description'          => "{$plan->Branch->load('Branches')->Name}: {$plan->Plan} (£{$plan->Amount})",
@@ -59,15 +59,5 @@ class CreatePaymentFlow extends GenericGoCardlessAction {
         ]);
 
         return $response->withRedirect($flow->redirect_url);
-    }
-
-    private static function parseLanguage(?string $language = null) {
-        return empty($language)
-            ? 'en'
-            : [
-                'English' => 'en',
-                'Spanish' => 'es',
-                'Portuguese' => 'pt',
-            ][$language] ?? 'en';
     }
 }
