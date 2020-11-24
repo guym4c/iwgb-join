@@ -1,5 +1,9 @@
 <div class="form-group">
-    <label for="{{id}}">{{title}}</label>
+    <label for="{{id}}">
+        {{#parseHidden}}
+            {{{title}}}
+        {{/parseHidden}}
+    </label>
     {{#if type.date}}
         {{> date}}
     {{/if}}

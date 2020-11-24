@@ -30,10 +30,10 @@ abstract class AbstractTypeformHandler extends AbstractSessionValidationHandler 
         string $dataUrl = ''
     ): ResponseInterface {
         if (!$this->settings['isProd']) {
-            return $this->redirectToRoute($response, Route::MOCK_FORM, [
+            return $this->redirectToRoute($response, Route::MOCK_FORM, array_merge($query, [
                 'id' => $formId,
                 'data' => $dataUrl,
-            ]);
+            ]));
         }
 
         return $response->withRedirect($this->getTypeformUrl($request, $formId, $query));

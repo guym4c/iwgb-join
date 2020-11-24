@@ -5,8 +5,11 @@ namespace Iwgb\Join\Handler\Typeform;
 use Guym4c\TypeformAPI\Model\Resource\Form;
 use Guym4c\TypeformAPI\Model\Utils\Field\FieldType;
 use Guym4c\TypeformAPI\TypeformApiException;
+use Handlebars\Context;
 use Handlebars\Handlebars;
+use Handlebars\Template;
 use Iwgb\Join\Provider\Provider;
+use Parsedown;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Container;
 use Slim\Http\Request;
@@ -15,6 +18,11 @@ use Slim\Http\Uri;
 use Teapot\StatusCode;
 
 class MockForm extends AbstractTypeformHandler {
+
+    private const METADATA_QUERY_KEYS = [
+        'id' => true,
+        'data' => true,
+    ];
 
     private Handlebars $view;
 
@@ -41,6 +49,8 @@ class MockForm extends AbstractTypeformHandler {
         $aid = $this->getApplicant($request)->getId();
 
         $form = Form::get($this->typeform, $formId);
+
+        $this->addLabelParserHelper($form, $request);
 
         $completionUrl = '';
         if (!empty($form->settings->redirectAfterSubmitUrl)) {
@@ -77,5 +87,23 @@ class MockForm extends AbstractTypeformHandler {
             $types[$type] = $type === $targetType;
         }
         return $types;
+    }
+
+    private function addLabelParserHelper(Form $form, Request $request): void {
+        $queryData = array_diff_key($request->getQueryParams(), self::METADATA_QUERY_KEYS);
+        $this->view->addHelper(
+            'parseHidden',
+            function (Template $template, Context $context) use ($form, $queryData): string {
+                $label = (new Parsedown())
+                    ->text($context->get('title'));
+                return $template->render([
+                    'title' => preg_replace_callback(
+                        '/{{hidden:(?<name>[A-z]+)}}/',
+                        fn (array $matches): string => $queryData[$matches['name']] ?? $matches[0],
+                        $label,
+                    ),
+                ]);
+            },
+        );
     }
 }

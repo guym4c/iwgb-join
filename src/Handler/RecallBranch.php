@@ -6,13 +6,14 @@ namespace Iwgb\Join\Handler;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Guym4c\Airtable\AirtableApiException;
+use Iwgb\Join\Handler\Typeform\AbstractTypeformHandler;
 use Iwgb\Join\Log\Event;
 use Iwgb\Join\Route;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class RecallBranch extends RootHandler {
+class RecallBranch extends AbstractTypeformHandler {
 
     /**
      * {@inheritdoc}
@@ -21,7 +22,6 @@ class RecallBranch extends RootHandler {
      * @throws OptimisticLockException
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
-
         $applicant = $this->getApplicant($request);
         $applicant->setCoreDataComplete(true);
 
@@ -39,7 +39,7 @@ class RecallBranch extends RootHandler {
             return $this->redirectToRoute($response, Route::CREATE_PAYMENT);
         }
 
-        return self::redirectToTypeform($branch->{'Typeform ID'}, $request, $response, [
+        return $this->redirectToTypeform($branch->{'Typeform ID'}, $request, $response, [
             'amount' => $plan->Amount,
         ]);
     }

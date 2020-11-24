@@ -173,6 +173,9 @@ class Sorter extends AbstractTypeformHandler {
         $answesFromQuery = array_diff_key($request->getQueryParams(), self::METADATA_QUERY_KEYS);
         $answersJson = [];
         foreach ($answesFromQuery as $fieldId => $answer) {
+            if (in_array($answer, ['true', 'false'])) {
+                $answer = $answer === 'true';
+            }
             $answersJson[] = [
                 'text' => $answer,
                 'field' => ['id' => $fieldId],
