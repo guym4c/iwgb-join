@@ -18,8 +18,11 @@ class AirtableProvider implements ServiceProviderInterface {
             new Airtable($c[Provider::SETTINGS]['airtable']['key'], $c[Provider::SETTINGS]['airtable']['base'],
                 new FilesystemCache(APP_ROOT . '/var/cache/airtable'),
                 ['Branches', 'Plans', 'Job types'],
-                'https://airtable.iwgb.org.uk/v0',
-                ['X-Proxy-Auth' => $c[Provider::SETTINGS]['airtable']['proxyKey']],
+                'https://outbound.iwgb.org.uk/v0',
+                [
+                    'X-Proxy-Auth' => $c[Provider::SETTINGS]['airtable']['proxyKey'],
+                    'X-Proxy-Destination-Key' => 'airtable',
+                ],
                 false
             );
     }
