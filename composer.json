@@ -24,5 +24,8 @@
         "psr-4": {
             "Iwgb\\Join\\": "src/"
         }
+    },
+    "scripts": {
+        "start:dev": "php -S localhost:49421 public/index.php"
     }
 }

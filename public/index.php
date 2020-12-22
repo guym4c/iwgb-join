@@ -16,7 +16,8 @@ $cors = Middleware\Cors::withOptions();
 
 $app = new App($c);
 
-$app->add(new Middleware\RemoveTrailingSlashes($c));
+$app->add(new Middleware\RemoveTrailingSlashes($c))
+    ->add(new Middleware\PhpCliSapiCompat($c));
 
 $app->options('/{routes:.+}', fn(Request $request, Response $response) =>
     $response->withStatus(StatusCode::NO_CONTENT)

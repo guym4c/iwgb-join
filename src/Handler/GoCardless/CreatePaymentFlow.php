@@ -24,7 +24,6 @@ class CreatePaymentFlow extends AbstractGoCardlessHandler {
      * @throws OptimisticLockException
      */
     public function __invoke(Request $request, Response $response, array $args): ResponseInterface {
-
         $applicant = $this->getApplicant($request);
         $applicant->setBranchDataComplete(true);
         $record = $applicant->fetchRecord($this->airtable);
@@ -39,7 +38,7 @@ class CreatePaymentFlow extends AbstractGoCardlessHandler {
         try {
             $flow = $this->goCardless->redirectFlows()->create(['params' => [
                 'session_token'        => $applicant->getSession(),
-                'success_redirect_url' => $this->router->urlFor(Route::COMPLETE_PAYMENT),
+                'success_redirect_url' => $this->router->fullUrlFor($this->request->getUri(), Route::COMPLETE_PAYMENT),
                 'description'          => "{$plan->Branch->load('Branches')->Name}: {$plan->Plan} (£{$plan->Amount})",
                 'prefilled_customer'   => [
                     'email'       => $record->Email,

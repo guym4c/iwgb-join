@@ -42,8 +42,6 @@ abstract class RootHandler {
         $this->airtable = $c[Provider::AIRTABLE];
         $this->sm = $c[Provider::SESSION];
         $this->router = $c[Provider::ROUTER];
-
-        $this->router->setBasePath($this->settings['baseUrl']);
     }
 
     /**
