@@ -35,7 +35,7 @@ final class Error extends Enum {
     private const RECALLED_APPLICATION_NOT_STARTED = 47;
 
     private const NO_GC_FLOW_ID_PROVIDED = 50;
-    private const PAYMENT_FAILED_COMPLETE_NO_MANDATE = 51;
+    private const PAYMENT_FAILED__NO_MANDATE = 51;
     private const PAYMENT_FAILED_MANDATE_CREATED = 52;
     private const MMS_INTEGRATION_NO_MANDATE = 53;
     private const MMS_INTEGRATION_MANDATE_CREATED = 54;
