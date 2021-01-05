@@ -141,7 +141,7 @@ class CompletePayment extends AbstractGoCardlessHandler {
         $this->airtable->update($record);
 
         $this->goCardless->customers()->update($customer->id, ['params' => [
-            'language' => self::parseLanguage($record->Language),
+            'language' => self::parseLanguage($record->Language[0] ?? null),
         ]]);
 
         $this->log->addInfo('Updated applicant as Confirmed', [
