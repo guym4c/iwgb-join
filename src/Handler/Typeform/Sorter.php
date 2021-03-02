@@ -112,7 +112,10 @@ class Sorter extends AbstractTypeformHandler {
 
     private function findResultByQuestion(Answer $answer): ?SorterResult {
 
-        foreach ($this->em->getRepository(SorterResult::class)->findAll() as $result) {
+        foreach (
+            $this->em->getRepository(SorterResult::class)->findBy(['question' => $answer->field->id])
+            as $result
+        ) {
 
             /** @var SorterResult $result */
 

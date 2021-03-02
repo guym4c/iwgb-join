@@ -16,6 +16,7 @@ use Teapot\StatusCode;
 class JobTypeProxy extends RootHandler {
 
     private const JOB_TYPE_WORKSPACE = 'mhvN5b';
+    private const JOB_TYPE_PAGE_SIZE = 20;
     private const TYPEFORM_BASE_URL = 'https://api.typeform.com/forms';
 
     protected GuzzleHttp\Client $http;
@@ -57,6 +58,7 @@ class JobTypeProxy extends RootHandler {
                     return $this->typeformRequest('GET', [
                         'query' => [
                             'workspace_id' => self::JOB_TYPE_WORKSPACE,
+                            'page_size' => self::JOB_TYPE_PAGE_SIZE,
                         ],
                     ]);
                 }
